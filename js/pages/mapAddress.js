@@ -462,15 +462,17 @@ function initBodyEvent() {
 		if(!mapAddressCtl.Map.LocalLat && !mapAddressCtl.Map.LocalLng && !mapAddressCtl.Control.IsLocation) {
 			mapAddressCtl.Control.IsLocation = true;
 			layer.open({ content: "正在定位...", skin: "msg", time: 2 });
-            var geolocation = new BMap.Geolocation();
-            geolocation.getCurrentPosition(function(r){
-                if(this.getStatus() == BMAP_STATUS_SUCCESS){
-                    getLocationInfo(r.point);
-                    mapAddressCtl.Address = mapAddressCtl.Map;
-                }else {
-
+                if (navigator.geolocation) { //判断浏览器是否能获取当前位置
+                    navigator.geolocation.getCurrentPosition(function(){
+                    	var page = {};
+                        page.lng = param.coords.longitude;
+                        page.lat = param.coords.latitude;
+                        getLocationInfo(page)
+					});
                 }
-            },{enableHighAccuracy: true})
+                else {
+                    simpleNoty("无法自动定位,请输入您的用餐地址");
+                }
 			getLocation();
 			return;
 		}
