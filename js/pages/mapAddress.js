@@ -463,7 +463,7 @@ function initBodyEvent() {
 			mapAddressCtl.Control.IsLocation = true;
 			layer.open({ content: "正在定位...", skin: "msg", time: 2 });
                 if (navigator.geolocation) { //判断浏览器是否能获取当前位置
-                    navigator.geolocation.getCurrentPosition(function(){
+                    navigator.geolocation.getCurrentPosition(function(param){
                     	var page = {};
                         layer.open({ content: "正在"+page.lat+page.lng, skin: "msg", time: 2 });
                         page.lng = param.coords.longitude;
