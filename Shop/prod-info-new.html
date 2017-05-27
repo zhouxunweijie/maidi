@@ -1,0 +1,324 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>产品详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../js/swiper/css/swiper.min.css" />
+		<link rel="stylesheet" href="../css/pages/prod-info-new.css" />
+		<link rel="stylesheet" href="../css/animate.min.css" />
+		<link rel="stylesheet" href="../css/info.css" />
+		<link rel="stylesheet" href="../css/pages/chooseParams.css" />
+	</head>
+
+	<body ms-controller="myCtl">
+		<div ms-controller="ChooseUserCtl" id="div-chooseUser-main">
+			<div id="div-chooseUser-info" ms-class="['animated','div-chooseUser-main',IsShowMain==1?'slideInRight':'slideOutRight']" style=" display:none;">
+				<header class="mui-bar mui-bar-nav">
+					<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+					<h1 class="mui-title">完善信息</h1>
+				</header>
+				<div class="mui-content">
+					<ul class="data-group">
+						<li class="data-row">
+							<label>手机号</label>
+							<div class="body">
+								<input type="text" maxlength="11" placeholder="请输入手机号" ms-duplex="Phone" />
+							</div>
+						</li>
+						<li class="data-row">
+							<label>验证码</label>
+							<div class="body">
+								<input type="text" placeholder="请输入验证码" ms-duplex="Code" />
+							</div>
+							<p class="md-icon opt color-blue wth90" id="btn-idtCode" ms-text="Countdown==60?'获取验证码':Countdown+'s后获取'" ms-click="getCode"></p>
+						</li>
+					</ul>
+					<div class="mui-content-padded">
+						<button id="btn-confirm-info" class="mui-btn mui-btn-primary mui-btn-block" ms-click="btnConfirmInfo">确定</button>
+					</div>
+				</div>
+			</div>
+			<div ms-class="['animated','div-chooseUser-main',IsShowChoose==1?'slideInRight':'slideOutRight']" style="display:none" id="div-chooseUser-list">
+				<header class="mui-bar mui-bar-nav">
+					<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+					<h1 class="mui-title">选择用户</h1>
+				</header>
+				<div class="mui-content">
+					<ul class="mui-table-view" id="user_list">
+						<li class="mui-table-view-cell chooseUser" ms-attr="{idx:index}" ms-for="(index,user) in Datas">
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" style="width: 40px;" ms-attr="{src:getUserLogo(user.UserID)}">
+								<div class="mui-media-body">
+									<span style="color: #000000;font-size: 15px;" ms-text="user.UserName||user.RealName||user.Mdt"></span>
+									<p ms-text="user.Mdt"></p>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--头部操作按钮-->
+		<div class="head-button">
+			<!--头部返回-->
+			<div class="indicator  back" id="icon-back">
+				<i class="mui-icon mui-icon-back  font-22"></i>
+			</div>
+			<!--头部购物车-->
+			<div class="indicator  shoppingcart" id="cart">
+				<i class="mui-icon icon-shopping-cart font-17 "></i>
+			</div>
+			<!--头部订单-->
+			<div class="indicator  order" id="icon-order">
+				<i class="mui-icon  icon-buy-record font-19"></i>
+			</div>
+		</div>
+		<div class="mui-content" id="main-div" style="margin-bottom: 50px; display: none;">
+			<!--产品外形图片轮播 -->
+			<div class="mui-slider ">
+				<div class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide">
+							<img ms-attr="{src:getImg(1,'')}" />
+						</div>
+						<div class="swiper-slide" ms-for="index,obj in prodInfo.Photos" ms-if="prodInfo.Photos.length>0">
+							<img ms-attr="{src:getImg(2,obj)}" />
+						</div>
+						<div class="swiper-slide" ms-for="index,obj in prodInfo.Models" ms-if="prodInfo.Photos.length==0 && prodInfo.Models.length>0">
+							<img ms-attr="{src:getImg(3,obj)}" />
+						</div>
+					</div>
+					<div class="swiper-pagination"></div>
+				</div>
+			</div>
+			<div class="prod_info">
+				<div class="div_prodname" ms-text="prodName">
+				</div>
+				<div class="sku_name font-12" ms-visible="skuName" ms-text="'型号：'+skuName">
+				</div>
+				<div class="prod_innerCode font-12" ms-visible="prodSParams.produceInfo.ProdInnerCode && isShowValue()" ms-text="InnerCodeName+'：'+prodSParams.produceInfo.ProdInnerCode">
+				</div>
+				<div class="div_brief font-12 color-red-md" ms-visible="prodInfo.ProdBrief" ms-text="prodInfo.ProdBrief">
+				</div>
+				<div class="div_nums">
+					<div class="div_price" ms-if="isPrice && price">
+						<span class="color-red-md font-16">￥<span class="font-20 color-red-md" ms-text="price"></span></span>
+					</div>
+					<div class="div_price" ms-if="isPrice==false||!price">
+						<span class="color-red-md font-16">请联系【客服】在线询价</span>
+					</div>
+					<div class="div_num">
+						<div class="div_collect nums btn_collect">
+							<i ms-class="['font-14',isCollect?'icon-heart color-red-md':'color-gray icon-heart-empty']"></i>
+							<span class="color-gray font-12" ms-text="prodInfo.CollectNums">
+                        </span>
+						</div>
+						<div class="div_views nums">
+							<i class="color-gray font-14 icon-view"></i><span class="color-gray font-12" ms-text="prodInfo.Views"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--产品参数-->
+			<ul class="data-group biglabel" ms-if="prodParamShow.length>0 && isLoadParams">
+				<li class="prod-data-row selParams">
+					<label>产品参数</label>
+					<p class="opt md-icon chooseParams" ms-visible="!skuId">
+						<span class="icon-right"></span>
+					</p>
+				</li>
+				<li class="prod-data-row" ms-for="index,obj in prodParamShow|filterBy(filter_value)">
+					<label ms-text="obj.Name"></label>
+					<div class="body" ms-text="obj.Value" ms-visible="obj.Value">
+					</div>
+					<div class="body" ms-text="obj.Values[0]" ms-visible="!obj.Value && obj.Values.length==1">
+					</div>
+				</li>
+			</ul>
+			<!--产品生产信息-->
+			<ul class="data-group biglabel" ms-if="mdCode && prodSParams.ProduceParams.length>0 && isLoadSParams">
+				<li class="prod-data-row" ms-for="index,obj in prodSParams.ProduceParams">
+					<label ms-text="obj.ParamName"></label>
+					<div class="body" ms-text="obj.ParamDefValue">
+					</div>
+				</li>
+			</ul>
+			<!--产品企业信息-->
+			<ul class="data-group" ms-visible="isLoadCompInfo">
+				<li class="data-row comp_info">
+					<a class="opt md-icon comp_phone" ms-visible="compInfo.LinkPhone" ms-attr="{href:'tel:'+compInfo.LinkPhone}">
+						<span class="icon-phone font-22"></span>
+					</a>
+					<div class="body">
+						<img src="../images/enterlicense.png" ms-visible="compInfo.JoinLevel>=1" style="position: absolute;height: 70px;width: 70px;" />
+						<img class="size70 float-left prodImg border-f2 bg-f2" ms-attr="{src:getImg(6,compInfo.CompID)}" />
+						<div class="comp-info" ms-attr="{'data-prodId':prod.ProdID,'data-skuname':prod.SkuName,'data-id':prod.ID}">
+							<span class="font-17 " ms-text="compInfo.CompName"></span>
+							<div class="font-12" ms-text="'迈迪通号：'+compInfo.CompMdt"></div>
+							<div class="font-12 mt-4 " ms-text="'联系电话：'+compInfo.LinkPhone" ms-visible="compInfo.LinkPhone"></div>
+							<div class="font-12 mt-4" ms-text="'地址：'+getAddress(compInfo.Province,compInfo.City,compInfo.District)"></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<!--产品tab页签-->
+			<ul class="md-tab md-tab-up mt10" ms-visible="isLoadTab1">
+				<li ms-class="['md-tab-item',tab_idx==1?'md-active':'']" data-idx='1'>产品详情</li>
+				<li ms-class="['md-tab-item',tab_idx==2?'md-active':'']" data-idx='2'>电子样本</li>
+				<li ms-class="['md-tab-item',tab_idx==3?'md-active':'']" data-idx='3'>视频说明书</li>
+			</ul>
+			<!--产品详情-->
+			<div id="tab-pro" class="tab-pro" ms-visible="tab_idx==1" style="margin-bottom: 70px;">
+				<div ms-visible="isLoadTab1 && prodIntro" ms-html="prodIntro">
+				</div>
+				<div class="empty" ms-visible="isLoadTab1 && !prodIntro" style="display: none">暂无产品详情！</div>
+			</div>
+			<!--电子样本-->
+			<div id="tab-ebook" class="tab-ebook" ms-visible="tab_idx==2" style="margin-bottom: 70px;">
+				<div ms-visible="isLoadTab2 && eBook.length>0">
+					<div ms-for="index,obj in eBook">
+						<img ms-attr="{src:getImg(4,obj),'data-preview-src':getImg(4,obj,1)}" data-preview-group="4" />
+					</div>
+				</div>
+				<div class="empty" ms-visible="isLoadTab2 && eBook.length==0" style="display: none">暂无电子样本！</div>
+			</div>
+			<!--视频说明书-->
+			<div id="tab-video" class="tab-video" ms-visible="tab_idx==3" style="margin-bottom: 70px;">
+				<ul class="data-group tab-video" ms-visible="isLoadTab3 && video.length>0">
+					<li class="data-row" ms-attr="{'data-value':obj.FileName,'data-path':obj.FilePath,'data-type':obj.FileExtension}" ms-for="index,obj in video">
+						<div class="body">
+							<a class="color-blue" ms-text="obj.FileName"> </a>
+						</div>
+					</li>
+					<video id="iosvideo" webkit-playsinline width="1" height="1" style="display:none;" class="vplayinside notaplink" x-webkit-airplay controls loop="loop"></video>
+				</ul>
+				<div class="empty" ms-visible="isLoadTab3 && video.length==0" style="display: none">暂无视频说明书！</div>
+			</div>
+			<div id="serviceUsers" class="mui-popover mui-popover-action mui-popover-bottom">
+				<div class="mui-scroll-wrapper" style="bottom:34px;">
+					<div class="mui-scroll">
+						<ul class="data-group">
+							<li class="data-row openChart" ms-for="index,obj in serviceUsers" ms-attr="{'data-id':obj.AuthUserID,'data-mdt':obj.AuthUserMdt,'data-name':obj.AuthUserName}">
+								<div class="body">
+									<img class="float-left size42 bg-f2 border-f2 mr10" ms-attr="{src:getImg(5,obj.AuthUserID)}" />
+									<div class="title" ms-text="obj.AuthUserName"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<ul class="data-group" style="position:absolute;bottom: 0px;width: 100%;z-index: 9999;">
+					<li class="data-row">
+						<a href="#serviceUsers" class="body mui-text-center"><b>取消</b></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<img ms-attr="{src:api+'/nums/cGtnX3ZpZXc=.'+prodId+'.png'}" id="img-addViews" style="display: none;" />
+		<footer ms-visible="(prodParamShow.length>0 && isLoadParams) || CanBuy">
+			<div class="f-kefu f-item" id="btn_service">
+					<span class="icon-talk font-20"></span>
+					<p>客服</p>				
+			</div>
+			<!--<div class="f-dianpu f-item" id="btn_shop">
+            <span class="icon-shop font-20"></span>
+            <p>商家</p>
+        </div>-->
+			<div class="f-collect f-item btn_collect" id="btn_collect">
+				<span ms-class="['font-20',isCollect?'icon-heart color-red-md':'icon-heart-empty']"></span>
+				<p ms-text="isCollect?'取消关注':'关注'"></p>
+			</div>
+			<div class="f-btns">
+				<div class="btn btn_addcart font-14">
+					加入购物车
+				</div>
+				<div class="btn btn_buy font-14">
+					立即购买
+				</div>
+			</div>
+			<div class="f-btns" style="display: none;">
+				<div class="btn notbuy" ms-if="prodInfo.State==7||prodInfo.State=='z'">
+					该产品已下架
+				</div>
+				<div class="btn notbuy" ms-if="prodInfo.State!='z'&&prodInfo.State!=7">
+					暂不支持线上购买
+				</div>
+			</div>
+		</footer>
+		<div style="display:none;" id="div_chooseParams">
+			<div class="div_mark" ms-visible="IsShowParams==1">
+			</div>
+			<div ms-class="['animated','chooseParams_main',IsShowParams==1?'fadeInUpBig':'fadeOutDownBig']">
+				<ul class="data-group choose_prod_info">
+					<li class="data-row">
+						<p class="opt md-icon closeWin">
+							<span class="icon-close-4 font-18 color-gray"></span>
+						</p>
+						<div class="body">
+							<img class="float-left size90 bg-f2 border-f2 mr10" ms-attr="{src:getImg(1,'','','_90x90.jpg')}" />
+							<div class="title" ms-visible="price>0"><span class="color-red-md" ms-visible="price>0">￥</span><span class="color-red-md font-20" id="choosePrice" ms-text="price"></span></div>
+							<!--<div class="title" ms-if="price==0">
+                            <span class="color-red-md font-16">请在线询价</span>
+                        </div>-->
+							<div class="lh15 mui-ellipsis-2" ms-text="'型号：'+skuName" ms-visible="skuName"></div>
+						</div>
+					</li>
+				</ul>
+				<div class="body_params" id="body-params" ms-visible="isShowChooseParams()">
+					<!--style="height: 250px;"-->
+					<ul class="data-group" ms-visible="isLoadParams">
+						<li class="data-row" ms-for="index,obj in prodParams|filterBy(filter_params)">
+							<label ms-text="obj.Name"></label>
+							<div ms-class="['body',obj.Type==3 && showParams?'params_item_padding':'']">
+								<!--选择框 -->
+								<div ms-if="obj.Type==3" class="params_choose_box" ms-attr="{'data-value':getDataValue(obj),'data-id':obj.ID,'data-filter':isFilter(obj),'data-name':obj.Name}">
+									<span ms-for="cIndex,cObj in obj.Values" ms-text="cObj" ms-class="['params-item',isActive(obj,cObj),paramsIsDisable(obj.ID,cObj)]" ms-if="showParams"></span>
+									<span ms-text="obj.Value || obj.Values[0]" ms-if="!showParams"></span>
+								</div>
+								<!--输入框-->
+								<div ms-if="obj.Type==1" class="params_input_box" ms-attr="{'data-value':obj.Value,'data-id':obj.ID,'data-name':obj.Name}">
+									<input ms-attr="{placeholder:obj.Hint,value:obj.Value}" class="params-input" ms-if="showParams" />
+									<span ms-text="obj.Value" ms-if="!showParams"></span>
+								</div>
+								<div ms-if="obj.Type==0" ms-text="obj.Value">
+								</div>
+							</div>
+						</li>
+					</ul>
+					<div ms-visible="!isLoadParams" class="mui-text-center mt16">
+						<span class="mui-spinner"></span>
+					</div>
+				</div>
+				<ul class="data-group" ms-visible="BuyType>0 && price>0">
+					<!--style="display:none"-->
+					<li class="data-row">
+						<label> 购买数量</label>
+						<div class="body">
+							<div class="mui-numbox float-right" data-numbox-step='1' data-numbox-min='1'>
+								<!--ms-class="['font-20',isCollect?'icon-heart color-red-md':'icon-heart-empty']"-->
+								<button id="test" class="mui-btn mui-btn-numbox-minus" ms-class="[BuyNums==1?'min':'add']"  type="button" ms-attr="{disabled:BuyNums<1?'disabled':''}" ms-click="BuyNumsPlus('min')">-</button>
+								<input class="mui-input-numbox" type="number" id="buy_nums" ms-duplex="BuyNums"oninput="if(value.length>9)value=value.slice(0,9);" />
+								<button class="mui-btn mui-btn-numbox-plus" type="button" ms-click="BuyNumsPlus('add')">+</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<button class="btn_save" id="btn_chooseParams_save">确定</button>
+			</div>
+		</div>
+		<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="../js/avalon.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/swiper/js/swiper.min.js"></script>
+		<script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+		<script type="text/javascript" src="../js/chooseUser.js"></script>
+		<script type="text/javascript" src="../js/chooseParams.js"></script>
+		<script type="text/javascript" src="../js/pages/prod-info-new.js"></script>
+	</body>
+
+</html>

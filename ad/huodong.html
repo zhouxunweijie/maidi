@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>活动页面</title>
+    <link href="css/ad.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
+</head>
+<body>
+    <!-- <div class="bg">
+        <img src="images/background.png" width="100%" height="100%" /></div>
+    <div id="title">
+        <div class="title_bj">
+            <img src="images/title.png" /></div>
+        <div id="link">
+            <div class="textarea">
+                <textarea id="txt_content" name="" cols="" rows=""></textarea>
+            </div>
+            <input id="btncopy" type="button" class="button" />
+        </div>
+        <div class="list">
+            <h1 id="invitednr">
+            </h1>
+            <div id="divad" class="table">
+                <table id="tableinfo" width="360" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th scope="col">
+                            迈迪通号
+                        </th>
+                        <th scope="col">
+                            用户昵称
+                        </th>
+                        <th scope="col">
+                             注册时间
+                        </th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>-->
+    跳转中...请稍后...
+</body>
+</html>
+<script src="../js/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="../js/global.js" type="text/javascript"></script>
+<script src="js/jquery.zclip.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var args = getUrlParams();
+    var mdt = args["mdt"];
+    window.location.replace("http://www.maidiyun.com/helper/huodong/index.html?mdt=" + mdt);
+    //    $("body").html("<h2 style='color:red'>推广功能优化中暂不能使用，请您谅解</h2>");
+    //    var args = getUrlParams();
+    //    var mdt = args["mdt"];
+    //    if (mdt.toString() != "") {
+    //        $("#txt_content").val("http://www.maidiyun.com/helper/UserPromotion.htm?mdt=" + mdt);
+    //        var tempHtmls = [];
+    //        gGet("http://api.maidiyun.com/u/GerUserPromotions?mdt=" + mdt + "&page=1&count=10000000", function (data) {
+    //            if (data.State == 1) {
+    //                $("#invitednr").text("您已成功邀请" + data.Count + "位用户！");
+    //                if (data.Count == 0) {
+    //                    $("#divad").append("<div class='text-center'>暂无推广记录</div>");
+    //                }
+    //                else {
+    //                    $.each(data.Rows, function () {
+    //                        var strhtml = "<tr >";
+    //                        strhtml += "<td>" + this.Mdt + "</td>";
+    //                        strhtml += "<td>" + this.UserName + "</td>";
+    //                        strhtml += "<td style='width:135px'>" + GetDate(this.CreateDate, false) + "</td>";
+    //                        strhtml += "</tr>";
+    //                        $("#tableinfo").append(strhtml);
+    //                    });
+    //                }
+    //            }
+    //        })
+    //    }
+    //    $(function () {
+    //        $('#btncopy').zclip({
+    //            path: 'js/ZeroClipboard.swf',
+    //            copy: function () {
+    //                return $('#txt_content').val();
+    //            },
+    //            afterCopy: function () {
+    //                alert("复制成功!");
+    //            }
+    //        });
+    //    });
+</script>

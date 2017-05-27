@@ -1,0 +1,139 @@
+.mui-checkbox input[type=checkbox]:before,
+.mui-radio input[type=radio]:before {
+	font-size: 20px;
+}
+
+.mui-checkbox input[type=checkbox]:checked:before,
+.mui-radio input[type=radio]:checked:before {
+	color: #DC0000;
+}
+
+.compName {
+	background-color: #F7F7F7;
+	height: 30px;
+}
+/*减号为1的样式*/
+.min {
+	background-color: #c3c0c0 !important;
+}
+/*减号不为1的样式*/
+.add {
+	background-color: #f9f9f9 !important;
+}
+
+.compName:after {
+	background-color: #FFFFFF !important;
+	height: 0px !important;
+}
+
+.select {
+	padding: 5px;
+	margin: -5px -5px -5px -5px;
+	font-size: 1.8rem!important;
+}
+
+.price {
+	float: left;
+	line-height: 28px;
+}
+
+.data-group .data-row .opt-right:not(.md-icon) {
+	width: 35px;
+	padding: 10px 10px 11px 10px;
+	left: 0px;
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+	overflow: hidden;
+	margin: 0;
+}
+
+.data-group .data-row .opt-right~.body {
+	margin-left: 30px;
+	padding: 10px 10px 11px 5px;
+}
+
+.prod_info {
+	padding-left: 80px;
+	width:100%;
+}
+
+.div_price {
+	width: 100%;
+	display: inline-block;
+}
+
+.mui-input-numbox {
+	margin: 0px!important;
+	height: 100%!important;
+}
+
+.mui-numbox {
+	height: 28px;
+	/*margin-top: 4px;*/
+	width: 90px;
+	padding: 0 27px;
+}
+
+.mui-numbox [class*=btn-numbox],
+.mui-numbox [class*=numbox-btn] {
+	width: 27px!important;
+}
+
+footer {
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+	line-height: 44px;
+	text-align: center;
+	color: #000;
+	z-index: 10;
+	background-color: #fff;
+	background-color: #F0F0F0;
+}
+
+.operate {
+	width: 100px;
+	float: right;
+	background-color: #DC0000;
+	color: #FFFFFF;
+}
+
+#btnSltAll {
+	float: left;
+	margin-left: 10px;
+	margin-bottom: -1px;
+}
+.prodName{
+	margin-right: 20px;
+    width: 100%;
+    display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+.comp_list:nth-last-child(2){
+	margin-bottom: 55px !important;
+}
+
+
+.color-red-md {
+	color: #DC0000 !important;
+}
+
+/*选中*/
+.icon-select:before {
+	content: "\e61c";
+}
+/*未选中*/
+.icon-unselect:before {
+	content: "\e64a";
+}
+.omit{
+	width:95%;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow: hidden;
+	display: inline-block;
+}

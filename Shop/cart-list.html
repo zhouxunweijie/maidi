@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>购物车</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+		<link rel="stylesheet" href="../css/pages/cart-list.css" />
+	</head>
+
+	<body ms-controller="appCtrl">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">购物车</h1>
+			<a id="btnEdit" ms-visible="!IsEdit && List && List.length>0" class="mui-icon mui-pull-right font-17" style="padding-top: 15px;padding-bottom: 13px;">编辑</a>
+			<a id="btnComplete" ms-visible="IsEdit && List && List.length>0" class="mui-icon mui-pull-right font-17" style="padding-top: 15px;padding-bottom: 13px;">完成</a>
+		</header>
+		<div class="mui-content" style="margin-bottom: 43px;">
+			<ul class="data-group comp_list" ms-visible="List.length>0" ms-for="index,obj in List" ms-attr="{'data-count':obj.ProdList.length,id:'cart_group_'+obj.CompID}">
+				<li class="data-row compName">
+					<div class="body">
+						<a ms-class="[Choosed.indexOf(obj.CompID+'')>=0?'select color-red-md icon-select':'icon-unselect color-gray-deep select','select-group']" data-type="group" ms-attr="{'data-Id':obj.CompID}"></a>
+						<span style="margin-left: 8px;">
+							<a  ms-attr="{href:'../company/entermain.html?id='+obj.CompID}" open-type="common" ms-text="obj.CompName" ms-attr="{'data-compId':obj.CompID}"></a>
+						</span>
+					</div>
+				</li>
+				<li class="data-row" ms-for="pIndex,prod in obj.ProdList">
+					<p class="opt-right">
+						<a ms-class="[Choosed.indexOf(prod.ID+'')>=0?'select color-red-md icon-select':'icon-unselect color-gray-deep select','select-child']" data-type="child" ms-attr="{'id':'child'+prod.ID ,'data-Id':prod.ID,'data-compId':obj.CompID,'data-price':prod.Price,'data-nums':prod.BuyNums,'data-cartId':prod.ID}"></a>
+					</p>
+					<div class="body" ms-attr="{'data-prodId':prod.ProdID,'data-skuname':prod.SkuName,'data-id':prod.ID}" ms-click="prodinfo(prod.ProdID,prod.SkuName,obj.CompID)">
+						<img class="size70 float-left prodImg border-f2 bg-f2" onerror="this.src='../../images/mdicon180.png'" ms-attr="{src:getLogo(prod.ProdID)}" />
+						<div class="prod_info" ms-attr="{'data-prodId':prod.ProdID,'data-skuname':prod.SkuName,'data-id':prod.ID}">
+							<span class="font-15 prodName omit" ms-text="prod.ProdName"></span>
+							<div class="font-13 color-gray-deep skuName " ms-text="prod.SkuName"></div>
+							<div class="div_price">
+								<span class="color-red-md font-18 price float-left" ms-text="'￥'+prod.Price"></span>
+								<div class="mui-numbox float-right" data-numbox-step='1' data-numbox-min='1'>
+									<button ms-class="[prod.BuyNums==1?'min':'add']" ms-click="changeProdNum('min',index,pIndex,obj.CompID,prod.BuyNums)" ms-attr="{'data-index':pIndex,'data-compId':obj.CompID}" class="mui-btn mui-btn-numbox-minus maopao" type="button">-</button>
+									<input class="mui-input-numbox numprice" type="number" oninput="if(value.length>9)value=value.slice(0,9);changeNums(this);this.value=this.value.replace(/\D/g,'')"
+										 onkeyup="this.value=this.value.replace(/\D/g,'')" 
+										 onafterpaste="this.value=this.value.replace(/\D/g,'')"   
+										 ms-attr="{'data-cartId':prod.ID,value:prod.BuyNums,'data-value':prod.BuyNums,'data-id':prod.ProdID,'data-compId':obj.CompID}" />
+									<button  ms-click="changeProdNum('add',index,pIndex,obj.CompID,prod.BuyNums)" ms-attr="{'data-index':pIndex,'data-compId':obj.CompID}" class="mui-btn mui-btn-numbox-plus maopao" type="button">+</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<div class="empty" ms-visible="List && List.length==0">购物车是空的呢~亲~</div>
+		</div>
+		<footer class="font-16" ms-visible="List.length>0">
+			<a id="btnSltAll">
+				<i ms-class="[Choosed.indexOf('all')>=0?'select color-red-md icon-select':'icon-unselect color-gray-deep select']" style="vertical-align: -1px;"></i>
+				<font style="margin-left: 5px;" class="color-gray-dark font-15">全选</font>
+			</a>
+			<span ms-visible="!IsEdit">总计：<span class="color-red-md" ms-text="'￥'+AllPrice"></span></span>
+			<span ms-visible="!IsEdit" id="btnSubmit" class="operate">结算(<span class="choose_num" ms-text="ChooseCount"></span>)</span>
+			<span ms-visible="IsEdit" id="btnDelete" class="operate">删除(<span class="choose_num"  ms-text="ChooseCount"></span>)</span>
+		</footer>
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookies.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+	<script type="text/javascript" src="../js/avalon.js"></script>
+	<script type="text/javascript" src="../js/pages/cart-list.js"></script>
+	<script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+
+</html>

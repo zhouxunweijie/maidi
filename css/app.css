@@ -1,0 +1,37 @@
+@charset "utf-8";
+/* CSS Document */
+
+body,p,h1,h2,h3,h4,h5,h6,dl,dd, input, textarea,select,table,form,ol,ul{margin:0;padding:0; font-family:"微软雅黑";}
+li{list-style:none;}
+a{text-decoration:none;font-size:12px;}
+img{border:none;vertical-align:top;cursor:pointer;}
+table{border-collapse:collapse;}
+textarea{resize:none;}
+.clear:after{content:'';display:block;clear:both;}
+.clear{zoom:1;}
+
+ul.pagenav-list { line-height: 22px; color: #242424; font-size: 12px; }
+ul.pagenav-list li { float: left; background-color: #fff; margin-left: 10px; *margin-left: 6px; }
+ul.pagenav-list li.nav { margin-left: 0; border: solid 1px #e8e8e8; border-right-width: 0; width: 20px; text-align: center; cursor: pointer; }
+ul.pagenav-list li.nav:hover { background-color: #f9f9f9; }
+ul.pagenav-list li.first { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
+ul.pagenav-list li.first.selected { border-left-color: #dc0000; }
+ul.pagenav-list li.end { border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-right-width: 1px; }
+ul.pagenav-list li.end.selected { border-right-color: #dc0000; }
+ul.pagenav-list li.selected { background-color: #dc0000; color: #fff; border-top-color: #dc0000; border-bottom-color: #dc0000; border-left-color: #dc0000; }
+ul.pagenav-list li.selected:hover { background-color: #dc0000; }
+ul.pagenav-list .jump-nums { background-color: #fff; float: left; text-align: center; width: 40px;border-top-left-radius: 4px; border-bottom-left-radius: 4px; border: solid 1px #e8e8e8; border-right-width: 0; height: 22px; outline-width: 0; }
+ul.pagenav-list .jump-btn { background-color: #fff; float: left; width: 40px; border:solid 1px #e8e8e8; border-top-right-radius: 4px; border-bottom-right-radius: 4px; height: 22px; text-align: center; cursor: pointer; outline: none; }
+ul.pagenav-list .jump-btn:hover { background-color: #f9f9f9; }
+
+.md-tree .arrow { background:url(../img/rht.png) no-repeat; width: 12px; height: 11px;position: absolute;  margin-left: 15px}
+.md-tree .opened>span.arrow { background:url(../img/bot.png) no-repeat;width: 12px; height: 11px;position: absolute;  margin-left: 15px}
+
+.md-tree { color: #000; font-family: Arial; }
+.md-tree li { position: relative; overflow: hidden; text-align: left; padding: 2px 0;margin-top:10px }
+.md-tree li>ul { display: none; margin-left: 17px; }
+.md-tree li.opened>ul { display: block; }
+.md-tree li>span { float: left; width: 12px; height: 11px; position: absolute;}
+.md-tree li>span.arrow,.md-tree li>span.gear { margin-top: 2px; }
+.md-tree li>a { display: block; overflow: hidden; line-height: 1.2; padding-left: 5px; padding-top: 1px; color:White;cursor:pointer; }
+.md-tree li.selected>a { color: #dc0000;  }

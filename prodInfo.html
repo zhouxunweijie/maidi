@@ -1,0 +1,407 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>产品详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/animate.min.css" />
+		<link rel="stylesheet" href="css/info.css" />
+		<style type="text/css">
+			html,
+			body {
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.mui-table-view-cell img {
+				margin-top: 2px;
+			}
+			
+			.mui-bar {
+				position: fixed;
+				z-index: 10;
+				right: 0;
+				left: 0;
+				height: 44px;
+				padding-right: 10px;
+				padding-left: 10px;
+				border-bottom: 0;
+				-webkit-box-shadow: 0 0 1px rgba(0, 0, 0, .85);
+				box-shadow: 0 0 1px rgba(0, 0, 0, .85);
+				-webkit-backface-visibility: hidden;
+				backface-visibility: hidden;
+			}
+			
+			.mui-bar .mui-title {
+				right: 40px;
+				left: 40px;
+				display: inline-block;
+				overflow: hidden;
+				width: auto;
+				margin: 0;
+				text-overflow: ellipsis;
+			}
+			
+			.mui-title {
+				font-size: 17px;
+				font-weight: 500;
+				line-height: 44px;
+				position: absolute;
+				display: block;
+				width: 100%;
+				margin: 0 -10px;
+				padding: 0;
+				text-align: center;
+				white-space: nowrap;
+				color: #000;
+			}
+			
+			.mui-bar-nav {
+				top: 0;
+				-webkit-box-shadow: 0 1px 6px #ccc;
+				box-shadow: 0 1px 6px #ccc;
+			}
+			
+			.mui-ellipsis-1 {
+				display: -webkit-box;
+				overflow: hidden;
+				white-space: normal !important;
+				text-overflow: ellipsis;
+				word-wrap: break-word;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+			}
+			
+			.mui-ellipsis-2 {
+				display: -webkit-box;
+				overflow: hidden;
+				white-space: normal !important;
+				text-overflow: ellipsis;
+				word-wrap: break-word;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+		</style>
+	</head>
+
+	<body ms-controller="appCtl">
+		<!--<header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">产品详情</h1>
+    </header>-->
+		<div class="mui-scroll-wrapper" ms-visible="Prod.ID>0" style="display: none">
+			<ul class="data-group">
+				<li class="data-row click-gray" ms-attr="{href:'shop/prod-info-new.html?mdCode='+MdCode+'&compId='+FacInstall.ID}" open-type="common">
+					<p class="opt md-icon">
+						<span class="icon-right"></span>
+					</p>
+					<div class="body">
+						<img class="float-left size90 bg-f2 border-f2 mr10" ms-attr="{src:ImgUrl+'/prod/logo/'+Prod.ID+'_100x100.jpg'}" />
+						<span class="title mui-ellipsis-1" style="padding:0">{{Prod.Name}}</span>
+						<p class="color-red-md mui-ellipsis-2">{{Prod.SkuName}}</p>
+						<img src="./images/ecode.png" height="35" ms-visible="IsImitations==0" />
+						<p class="color-red-md bold" ms-visible="IsImitations>=2">
+							<span class="icon-warn"></span> 疑似仿冒产品
+						</p>
+					</div>
+				</li>
+			</ul>
+			<ul class="btn-group">
+				<li class="btn-col" ms-attr="{href:'shop/fault-submit.html?code='+MdCode}" open-type="common">
+					我要报修
+				</li>
+				<li class="btn-col" ms-attr="{href:'shop/prod-info-new.html?mdCode='+MdCode+'&compId='+FacInstall.ID}" open-type="common">
+					配件采购
+				</li>
+
+			</ul>
+			<ul class="data-group">
+				<li class="data-row click-gray" open-type="common" winid="enterprisescard.html">
+					<label>生产厂家</label>
+					<p class="opt md-icon">
+						<span class="icon-right"></span>
+					</p>
+					<div class="body">
+						{{FacInstall.Name}}
+					</div>
+				</li>
+				<li class="data-row click-gray" ms-if="FacDate">
+					<label>生产日期</label>
+					<div class="body">
+						{{FacDate}}
+					</div>
+				</li>
+				<li class="data-row click-gray" ms-if="Dealer">
+					<label>经销商</label>
+					<div class="body">
+						{{Dealer}}
+					</div>
+				</li>
+			</ul>
+			<p class="data-group-tip" ms-if="Scan">迈迪物联码动态扫描记录</p>
+			<ul class="data-group" ms-if="Scan">
+				<li class="data-row click-gray">
+					<label>扫描总计</label>
+					<!--<p class="opt md-icon">
+                    <span class="icon-right"></span>
+                </p>-->
+					<div class="body">
+						{{Scan.count||0+1}}次
+					</div>
+				</li>
+				<li class="data-row click-gray">
+					<label>30天内总计</label>
+					<div class="body">
+						{{Scan.thirtyDayScanNum||0+1}}次，平均每天{{Scan.avgDayScanNum||0}}次
+					</div>
+				</li>
+				<li class="data-row click-gray">
+					<label>上次扫描时间</label>
+					<div class="body">
+						{{Scan.date | getScanTime}}
+					</div>
+				</li>
+				<li class="data-row click-gray">
+					<label>上次扫描地点</label>
+					<div class="body">
+						{{Scan.province | getAddress(Scan.city, Scan.district, Scan.address)}}
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div class="footer animated   bannerTips">
+			<img src="images/mdicon.png" class="md-icon-logo" />
+			<div class="content">
+				<span class="split">
+                </span>
+				<div class="body">
+					<div class="title">迈迪通</div>
+					<div class="description">制造业通用应用、工作、服务平台。 </div>
+				</div>
+				<a class="down" href="down.html">
+					下载
+				</a>
+				<div class="div_close md-icon">
+					<span class="icon-close-3 color-white font-22"></span>
+				</div>
+			</div>
+		</div>
+		<div class="empty" ms-visible="Prod.ID==0" style="display: none">获取产品信息失败！</div>
+		<div class="empty" ms-visible="Prod.ID==-1">加载中...</div>
+		<script src="js/jquery-1.11.0.min.js"></script>
+		<script src="js/jquery.base64.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/layer_mobile/layer.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=W6WIQmkWMM7fHZ1bQzONDGwimUikfaPU"></script>
+		<script type="text/javascript" src="js/avalon.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script type="text/javascript">
+			var app = avalon.define({
+				$id: "appCtl",
+				ImgUrl: MdAppUrl.Img,
+				Prod: { //产品信息
+					ID: -1,
+					Name: "",
+					SkuID: "",
+					SkuName: "",
+					Brief: ""
+				},
+				Fac: { //生产厂家
+					ID: 0,
+					Name: ""
+				},
+				FacInstall: { //装配后生产厂家
+					ID: 0,
+					Name: ""
+				},
+				Scan: "", //该码被扫描信息
+				FacDate: "", //生产日期
+				Dealer: "", //经销商
+				IsImitations: parseInt(query("state")) || 0, //0正常 1异常 2疑似仿冒
+				MdCode: "",
+				LoginCompID: 0, //当前用户的所在企业编号
+				ExistTask: false //存在任务
+			});
+			avalon.filters.getScanTime = function(date) {
+				return GetDate(date, true, true);
+			};
+			avalon.filters.getAddress = function(province, city, district, address) {
+				province = province || "";
+				city = city || "";
+				district = district || "";
+				address = address || "";
+
+				if(province == city) {
+					return province + " " + district + " " + address;
+				} else {
+					return province + " " + city + " " + district + " " + address;
+				}
+			};
+
+			$(function() {
+				$(".bannerTips .div_close").click(function() {
+					$(this).parents(".bannerTips").fadeOut();
+					//$(this).parents(".bannerTips").addClass("fadeOutRight");
+				});
+
+				var params = window.location.href.split("?");
+
+				if(params.length > 1) {
+					app.MdCode = params[1];
+				}
+
+				app.MdCode = app.MdCode.replace("=", "")
+
+				if(app.MdCode.length != 31) {
+					window.location.href = "down.html";
+				}
+
+				$("[open-type='common']").click(function() {
+					var href = this.getAttribute("href");
+					window.location.href = href ? href : "down.html";
+				});
+
+				setTimeout(function() {
+					loadProdInfo();
+				}, 500);
+			});
+
+			/**
+			 * 获取扫描后的产品信息
+			 */
+			function loadProdInfo() {
+				var url = MdAppUrl.Api45 + "/api/v1.0/MdCode/GetProdInfoByMdCode?code=" + app.MdCode;
+				//信息框
+				getAjaxData(url, function(res) {
+					if(res.State == 1) {
+						app.Prod.ID = res.Data.ProdID;
+						app.Prod.Name = res.Data.ProdName;
+						app.Prod.SkuName = res.Data.SkuName;
+						app.Prod.Brief = res.Data.ProdBrief;
+						app.Fac.ID = res.Data.CompID;
+						app.Fac.Name = res.Data.CompName;
+						loadFacInfo();
+						loadMdCodeInfoFromServer();
+
+						setTimeout(getAddr, 300);
+					} else {
+						app.Prod.ID = 0;
+					}
+				});
+			}
+
+			//根据装配关系，加载生产厂家信息
+			function loadFacInfo() {
+				var url = MdAppUrl.Api45 + "/api/v1.0/Prod/GetHostTreeByPartMdCode?MDCode=" + app.MdCode;
+				getAjaxData(url, function(res) {
+					//返回数据结构[{配件MdCode，配件厂家ID，配件厂家Name，主机MdCode，主机厂家ID，主机厂家Name},...]，如{{a,b},{b,c},{c,d}}：a装配到b，b装配到c，c装配到d
+					if(res && res.State == 1) {
+						//如果没有装配关系，则显示其原厂家
+						if(res.Data.length == 0) {
+							app.FacInstall.ID = app.Fac.ID;
+							app.FacInstall.Name = app.Fac.Name;
+							return;
+						}
+
+						//如果当前用户的企业是当前扫码的配件企业，则获取其厂家
+						if(res.Data[0].ProducerID == user.compid) {
+							app.FacInstall.ID = res.Data[0].ProducerID;
+							app.FacInstall.Name = res.Data[0].ProducerName;
+							return;
+						}
+
+						var temp = false;
+						var goNext = true;
+						res.Data.every(function(item, index) {
+							if(user.compid != item.ProducerID && user.compid != item.CompID) {
+								temp = true;
+							} else if(user.compid == item.ProducerID) {
+								//如果当前用户是配件厂家，生产厂家就是其上一级配件
+								app.FacInstall.ID = res.Data[index - 1].ProducerID;
+								app.FacInstall.Name = res.Data[index - 1].ProducerName;
+								goNext = false;
+								temp = false;
+								return false;
+							} else if(user.compid == item.CompID) {
+								//如果当前用户是主机厂家，生产厂家就是其上一级的配件
+								app.FacInstall.ID = item.ProducerID;
+								app.FacInstall.Name = item.ProducerName;
+								goNext = false;
+								temp = false;
+								return false;
+							}
+							return true;
+						})
+
+						//如果当前用户的企业不是装配关系中的配件企业或主机企业，则获取最顶级的主机厂家
+						if(temp == true && goNext == true) {
+							app.FacInstall.ID = res.Data[res.Data.length - 1].CompID;
+							app.FacInstall.Name = res.Data[res.Data.length - 1].CompName;
+							return;
+						}
+					}
+				}, false);
+			}
+
+			function getAddr() {
+				var geolocation = new BMap.Geolocation();
+				geolocation.getCurrentPosition(function(r) {
+					if(this.getStatus() == BMAP_STATUS_SUCCESS) {
+
+						trasnforPoint(r);
+					} else {
+
+					}
+				}, { enableHighAccuracy: true })
+			};
+
+			var time;
+
+			function trasnforPoint(r) {
+				var geo = new BMap.Geocoder();
+
+				geo.getLocation(new BMap.Point(r.point.lng, r.point.lat), function(res) {
+
+					if(res) {
+						loadMdCodeInfo(res)
+						if(time) {
+							window.clearInterval(time);
+						}
+					} else {
+						time = setInterval(getAddr, 1000);
+					}
+
+				}, { poiRadius: 10, numPois: 1 });
+			};
+
+			//获取迈迪码的扫码信息
+			function loadMdCodeInfo(point) {
+				var scanInfo = {
+					province: point.addressComponents.province,
+					city: point.addressComponents.city,
+					district: point.addressComponents.district,
+					address: point.address,
+					lat: point.point.lat,
+					lng: point.point.lng,
+					userId: 0
+				};
+
+				loadMdCodeInfoFromServer(scanInfo);
+			}
+
+			function loadMdCodeInfoFromServer(scanInfo) {
+				var url = MdAppUrl.InnerCodeUrl + "/mdcode/get?code=" + app.MdCode + "&type=mdcode&scanInfo=" + (scanInfo ? JSON.stringify(scanInfo) : "{}");
+
+				getAjaxData(url, function(obj) {
+					if(!scanInfo) {
+						app.Scan = obj.data.code.record;
+					}
+				});
+			};
+		</script>
+	</body>
+
+</html>

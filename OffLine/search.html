@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="mdApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>迈迪网 - 我的三维配件网</title>
+    <link type="text/css" rel="Stylesheet" href="../css/global.css" />
+    <style type="text/css">
+        html {
+            overflow: scroll;
+        }
+
+        body {
+            background: url(../images/sjbbg.png) no-repeat calc(100% - 6.5px) top;
+            background-attachment: fixed;
+        }
+
+            body::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            body::-webkit-scrollbar-track {
+                background: #fff7f0;
+            }
+
+            body::-webkit-scrollbar-thumb {
+                background: #e1e1e1;
+                border-radius: 4px;
+            }
+
+            body::-webkit-scrollbar-track {
+                background: #fff;
+            }
+
+            body::-moz-scrollbar {
+                width: 6px;
+            }
+
+            body::-moz-scrollbar-track {
+                background: #fff7f0;
+            }
+
+            body::-moz-scrollbar-thumb {
+                background: #e1e1e1;
+                border-radius: 4px;
+            }
+
+            body::-moz-scrollbar-track {
+                background: #fff;
+            }
+
+            body::scrollbar {
+                width: 6px;
+            }
+
+            body::scrollbar-track {
+                background: #fff7f0;
+            }
+
+            body::scrollbar-thumb {
+                background: #e1e1e1;
+                border-radius: 4px;
+            }
+
+            body::scrollbar-track {
+                background: #fff;
+            }
+
+        .grid-total {
+            width: auto;
+            padding-left: 10px;
+        }
+
+            .grid-total .grid-left {
+                width: 100%;
+            }
+
+        .item-list {
+            width: 100%;
+        }
+    </style>
+</head>
+<body ng-controller="companyCtl">
+    <div id="msrp-content">
+        <div class="grid-total mb15">
+            <div id="msrp-result" class="grid-left">
+                <div class="sort-nav">
+                    <div class="sort-row">
+                        <div class="sort-inner">
+                            <div class="pager">
+                                <ul class="items">
+                                    <li class="item">
+                                        <a class="link icon-tag" title="上一页">
+                                            <span class="icon-btn-prev"></span>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <span class="cpage h" id="navPage">{{ds.page}}</span>/<span class="tpage" id="navCount">{{ds.count}}</span>
+                                    </li>
+                                    <li class="item">
+                                        <a class="link icon-tag" title="下一页">
+                                            <span class="icon-btn-next"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-list">
+                    <!--产品查询结果-->
+                    <div class="grid-item" ng-if="ds.type!='1'" ng-repeat="x in ds.data.Rows">
+                        <div class="grid-panel">
+                            <div class="img-box">
+                                <a class="img-a" href="http://segdq.maidiyun.com/item/?id=151001000096" target="_blank">
+                                    <img ng-src="{{x.Images}}" alt="" title="{{x.ProdName}} " />
+                                </a>
+                            </div>
+                            <div class="info-box">
+                                <div class="title-row">
+                                    <a class="product-title" href="http://segdq.maidiyun.com/item/?id=151001000096"
+                                       target="_blank">{{x.ProdName}}<span class="feature">{{x.PromoteName}}</span></a>
+                                </div>
+                                <div class="info-row">
+                                    <span class="fl">点评{{x.CommentNums}}条</span> <span class="fr">点击{{x.Views}}次</span>
+                                </div>
+                                <div class="info-row">
+                                    <a href="http://segdq.maidiyun.com/" target="_blank" title="{{x.CompName}}" class="nav-a">
+                                        {{x.CompName}}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--企业查询结果-->
+                    <div class="ep-item" ng-if="ds.type=='1'" ng-repeat="x in ds.data.Rows">
+                        <div class="grid-panel">
+                            <div class="img-box">
+                                <a class="img-a" href="http://wxdl.maidiyun.com/" target="_blank">
+                                    <img ng-src="{{x.Images}}" alt="" title="{{x.CompName}}" />
+                                </a>
+                            </div>
+                            <div class="info-body">
+                                <div class="title-row">
+                                    <a class="title" href="http://wxdl.maidiyun.com/" target="_blank">{{x.CompName}} </a>
+                                </div>
+                                <p class="h">
+                                    通号：{{x.Mdt}}
+                                </p>
+                                <p>
+                                    访问：{{x.Views}} | 下载：{{x.DownNums}}
+                                </p>
+                                <p>
+                                    主营：{{x.MainProduct}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/angular-all.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../js/global.js"></script>
+    <script type="text/javascript">
+        var mdApp = angular.module('mdApp', []);
+        var args = getUrlParams();
+        var ds = {};
+
+        var type = args["type"] == "1" ? "1" : args["type"];
+        
+            
+
+
+        //传入的参数为
+        //search.html?type=1
+        //type:1代表企业 0 代表产品
+      
+        mdApp.controller('companyCtl', function ($scope, $http) {
+            ds.page = 1;
+            ds.count = 1;
+            ds.defaultCount = 20;
+            ds.type = type;
+
+            ds.scope = $scope;
+            ds.http = $http;
+
+            ds.data = {};
+
+            $scope.ds = ds;
+        });
+
+        function reLoad(data) {
+            ds.data = data;
+            ds.count = ds.data.PageCount;
+            ds.page = ds.data.Page;
+            ds.type = data.Type;
+
+            ds.scope.$apply();
+            $("#navPage").text(ds.data.Page);
+            $("#navCount").text(ds.data.PageCount);
+        }
+
+           
+        $(function () {
+            $$el("#msrp-content .sort-nav").autoFixed();
+            $(window).scrollTop(0);
+
+            $(".icon-btn-prev").click(function () {
+                if (ds.page > 1)
+                {
+                    window.CallCSharpMethod("PrevPage", "");
+                }
+
+            });
+            $(".icon-btn-next").click(function () {
+                if (ds.count > ds.page)
+                {
+                    window.CallCSharpMethod("NextPage", "");
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>企业详情</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="css/common.css" rel="stylesheet" />
+    <link href="css/animate.min.css"  rel="stylesheet"/>
+    <link rel="stylesheet" href="css/info.css" />
+
+    <style type="text/css">
+        .subbtn-wrap {
+            border: 0 solid #fff;
+            border-radius: 6px;
+            background-color: #169BD5;
+            padding: 10px 0;
+            display: block;
+            margin: 20px 5px;
+            text-decoration: none;
+            font-size: 13px;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body ms-controller="myCtl">
+
+
+    <div class="mui-scroll-wrapper" ms-visible="compInfo.CompName" style="display:none;">
+
+
+        <ul class="data-group">
+            <li class="data-row click-gray" open-type="common">
+                <p class="opt md-icon">
+                    <span class="icon-right"></span>
+                </p>
+                <div class="body">
+                    <img class="float-left size90 bg-f2 border-f2 mr10" ms-attr="{src:getLogo()}" />
+                    <span class="title" style="font-size:18px;">{{compInfo.CompName}}</span>
+                    <p class="color-red-md">{{'迈迪通号：'+compInfo.CompMdt}}</p>
+                </div>
+            </li>
+            <li class="data-row click-gray" ms-if="compInfo.MainProduct">
+                <label>主营产品</label>
+                <div class="body">
+                    {{compInfo.MainProduct}}
+                </div>
+            </li>
+            <li class="data-row click-gray" ms-if="compInfo.CompMdt" open-type="common">
+                <label>在线沟通</label>
+                <div class="body">
+                    {{compInfo.CompMdt}}
+                </div>
+                <p class="opt md-icon">
+                    <span class="icon-right"></span>
+                </p>
+            </li>
+            <li class="data-row click-gray" ms-if="compInfo.LinkPhone" open-type="common">
+                <label>联系电话</label>
+                <div class="body">
+                    {{compInfo.LinkPhone}}
+                </div>
+                <p class="opt md-icon">
+                    <span class="icon-right"></span>
+                </p>
+            </li>
+        </ul>
+        <p class="data-group-tip"></p>
+        <ul class="data-group">
+            <li class="data-row click-gray" ms-if="compInfo.AppArea">
+                <label>应用领域</label>
+                <div class="body">
+                    {{compInfo.AppArea}}
+                </div>
+            </li>
+        </ul>
+
+        <a href="down.html" class="subbtn-wrap">进入企业号</a>
+
+        <div class="footer animated   bannerTips">
+            <img src="images/mdicon.png" class="md-icon-logo" />
+            <div class="content">
+                <span class="split">
+                </span>
+                <div class="body">
+                    <div class="title">迈迪通</div>
+                    <div class="description">制造业通用应用、工作、服务平台。 </div>
+                </div>
+                <a class="down" href="down.html">
+                    下载
+                </a>
+                <div class="div_close md-icon">
+                    <span class="icon-close-3 color-white font-22"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="empty" ms-visible="compInfo.CompID==0" style="display: none">获取企业信息失败！</div>
+    <div class="empty" ms-visible="compInfo.CompID==-1">加载中...</div>
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery.base64.js"></script>
+    <script src="js/jquery.cookies.js"></script>
+    <script src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=W6WIQmkWMM7fHZ1bQzONDGwimUikfaPU"></script>
+    <script type="text/javascript" src="js/avalon.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "myCtl",
+            code: "",
+            compId: "",
+            compInfo: {
+                CompID: -1,
+                AppArea: "",
+                LinkPhone: "",
+                CompMdt: "",
+                MainProduct: "",
+                CompName: "",
+                CompMdt: ""
+            },
+            getLogo: function () {
+                return MdAppUrl.pic + "/Y29tcC9sb2dv_" + vm.compInfo.CompID + "_100x100.jpg"
+            }
+
+
+        });
+
+        $(function () {
+            $(".bannerTips .div_close").click(function () {
+                $(this).parents(".bannerTips").addClass("fadeOutRight");
+            });
+
+            //获取企业码
+            getCode();
+
+            //获取企业基本信息
+            getCompInfo();
+
+            $("body").on("click", "[open-type='common']", function () {
+                window.location.href = "down.html";
+            });
+
+        });
+
+        //获取扫码信息
+        function getCode() {
+            var params = window.location.href.split("?");
+            var code = "";
+            if (params.length > 1) {
+                code = params[1];
+            }
+
+            code = code.replace("=", "")
+
+            if (code.startsWith("MDQ")) {
+                vm.code = code;
+                vm.compId = vm.code.replace("MDQ", "");
+            }
+            else {
+                window.location.href = "down.html";
+            }
+
+        };
+
+        //获取企业基本信息
+        function getCompInfo() {
+            setTimeout(function () {
+                var url = MdAppUrl.Api4 + "/api/comp/GetInfo?compId=" + vm.compId;
+
+                getAjaxData(url, function (reData) {
+
+                    if (reData && reData.State > 0) {
+                        vm.compInfo.CompID = reData.Data.CompID;
+                        vm.compInfo.AppArea = reData.Data.AppArea;
+                        vm.compInfo.LinkPhone = reData.Data.LinkPhone;
+                        vm.compInfo.CompMdt = reData.Data.CompMdt;
+                        vm.compInfo.MainProduct = reData.Data.MainProduct;
+                        vm.compInfo.CompName = reData.Data.CompName;
+                        vm.compInfo.CompMdt = reData.Data.CompMdt;
+                    }
+                    else {
+                        vm.compInfo = { CompID: 0 };
+                    }
+
+                }, 500);
+            });
+
+        };
+    </script>
+</body>
+</html>

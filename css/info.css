@@ -1,0 +1,107 @@
+﻿.mui-scroll-wrapper {
+	padding-bottom: 50px;
+}
+
+.footer {
+	height: 50px;
+	background: #4C4C4C;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+.footer .md-icon-logo {
+	width: 40px;
+	position: relative;
+	top: 5px;
+	left: 10px;
+	float: left;
+}
+
+.footer .content {
+	width: 100%;
+	height: 50px;
+	top: 0px;
+	margin-left: 60px;
+	position: relative;
+}
+
+.footer .content .split {
+	height: 40px;
+	width: 5px;
+	background: url(images/split.png);
+	display: block;
+	position: absolute;
+	top: 0px;
+	left: -4px;
+}
+
+.footer .content .body {
+	width: 100%;
+}
+
+.footer .content .body .title {
+	color: #fff;
+	font-size: 16px;
+	margin-top: 6px;
+}
+
+.footer .content .body .description {
+	color: #fff;
+	font-size: 12px;
+	margin-top: 3px;
+}
+
+.footer .content .down {
+	width: 44px;
+	height: 35px;
+	color: #fff;
+	background: #169BD5;
+	border: none;
+	border-radius: 7px;
+	position: absolute;
+	top: 2px;
+	right: 85px;
+	font-size: 14px;
+	line-height: 35px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.footer .content .div_close {
+	width: 25px;
+	height: 50px;
+	position: absolute;
+	top: -5px;
+	right: 60px;
+	line-height: 50px;
+}
+
+.wth90 {
+	width: 90px;
+}
+
+.animated {
+	animation-duration: 200ms;
+}
+
+.div-chooseUser-main {
+	position: fixed;
+	z-index: 88;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
+	top: 0px;
+	z-index: 888;
+	background: #E2E2EC;
+}
+
+.div-chooseUser-main .mui-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+}
