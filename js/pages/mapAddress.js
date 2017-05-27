@@ -465,6 +465,7 @@ function initBodyEvent() {
                 if (navigator.geolocation) { //判断浏览器是否能获取当前位置
                     navigator.geolocation.getCurrentPosition(function(){
                     	var page = {};
+                        layer.open({ content: "正在"+page.lat+page.lng, skin: "msg", time: 2 });
                         page.lng = param.coords.longitude;
                         page.lat = param.coords.latitude;
                         getLocationInfo(page)
