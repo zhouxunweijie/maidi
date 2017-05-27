@@ -59,6 +59,56 @@ avalon.filters.contractAddress = function contractAddress(province, city, distri
 	}
 };
 
+
+datas()
+function datas(){
+    var geoc = new BMap.Geocoder();
+
+//自动定位
+   function autoLocation() {
+        if (navigator.geolocation) { //判断浏览器是否能获取当前位置
+            navigator.geolocation.getCurrentPosition(AddrSuc, AddrFail);
+        }
+        else {
+            alert("无法自动定位,请输入您的用餐地址");
+        }
+    }
+
+//获取当前坐标成功
+    function AddrSuc(param) {
+        var lng = param.coords.longitude;
+        var lat = param.coords.latitude;
+        var point = new BMap.Point(lng, lat);
+        //将gps坐标转换为百度地址坐标
+        BMap.Convertor.translate(point, 0, translateCallback);
+    }
+
+//获取坐标失败
+    function AddrFail(err) {
+        alert("自动定位失败");
+    }
+
+//坐标转换
+    function translateCallback(point) {
+
+        geoc.getLocation(point, function (rs) {
+            var addComp = rs.addressComponents;  //查询得到的地址对象组件
+            //addComp.streetNumber：街道门牌号
+            //addComp.city：城市
+            //addComp.district：区
+            //addComp.street：街道
+            //addComp.province：省
+            var address = addComp.city + addComp.district + addComp.street;
+            var lng_t = point.lng;  //经度
+            var lat_t = point.lat;   //纬度
+
+            alert("当前位置:" + address);
+        })
+    }
+    autoLocation()
+}
+
+
 var mapAddress = {
 	callback: "",
 	time: "",
@@ -462,18 +512,14 @@ function initBodyEvent() {
 		if(!mapAddressCtl.Map.LocalLat && !mapAddressCtl.Map.LocalLng && !mapAddressCtl.Control.IsLocation) {
 			mapAddressCtl.Control.IsLocation = true;
 			layer.open({ content: "正在定位...", skin: "msg", time: 2 });
-                if (navigator.geolocation) { //判断浏览器是否能获取当前位置
-                    navigator.geolocation.getCurrentPosition(function(param){
-                    	var page = {};
-                        layer.open({ content: "正在"+page.lat+page.lng, skin: "msg", time: 2 });
-                        page.lng = param.coords.longitude;
-                        page.lat = param.coords.latitude;
-                        getLocationInfo(page)
-					});
-                } else {
-                    layer.open({content:"无法自动定位,请输入您的用餐地址",skin:"msg",time:5});
+            var geolocation = new BMap.Geolocation();
+            geolocation.getCurrentPosition(function(r){
+                if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    getLocationInfo(r.point);
+                    mapAddressCtl.Address = mapAddressCtl.Map;
+                }else {
                 }
-            layer.open({ content: "正在...", skin: "msg", time: 9 });
+            },{enableHighAccuracy: true})
 			getLocation();
 			return;
 		}
