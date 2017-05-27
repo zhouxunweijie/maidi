@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>支付失败</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/common.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">
+				  支付结果
+			</h1>
+		</header>
+		<div ms-controller="myCtl" class="mui-content">
+			<div class="data-group mui-text-center" style="padding-bottom: 15px;padding-top:15px;">
+				<img src="../images/pay/error.png" style="width: 40px;height: 40px;" />
+				<div class="mt5">抱歉，支付失败！</div>
+			</div>
+			<ul class="data-group" ms-visible="Reason">
+				<li class="data-row">
+					<label>失败原因</label>
+					<div class="body">
+						{{Reason}}
+					</div>
+				</li>
+			</ul>
+			<div class="mui-content-padded">
+				<button id="btnMyOrder" class="mui-btn mui-btn-primary mui-btn-block">进入我的订单</button>
+			</div>
+		</div>
+		<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.cookies.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/avalon.js"></script>
+		<script type="text/javascript" src="../js/pages/pay-failure.js"></script>
+	</body>
+
+</html>

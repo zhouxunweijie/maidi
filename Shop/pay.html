@@ -1,0 +1,277 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href="../css/mui.min.css" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../js/swiper/css/swiper.min.css" />
+    <link rel="stylesheet" href="../css/pages/prod-info-new.css" />
+    <link rel="stylesheet" href="../css/animate.min.css" />
+    <link rel="stylesheet" href="../css/info.css" />
+    <style>
+        .mui-card {
+            border-radius: 5px;
+            box-shadow: none;
+        }
+
+        .mui-card-content-inner {
+            padding: 17px 15px 7px 15px;
+        }
+
+        .mui-card:active {
+            background-color: #F7F7F7 !important;
+        }
+
+        .card {
+            left: 20px;
+            top: 18px;
+            position: absolute;
+            width: 40px;
+            height: 40px;
+        }
+
+        .title {
+            margin-left: 60px;
+            display: -moz-inline-box;
+            display: inline-block;
+        }
+
+        .lh28 {
+            line-height: 28px;
+        }
+
+        .slt {
+            right: 15px;
+            top: 30px;
+            position: absolute;
+        }
+    </style>
+    <style type="text/css">
+        .androidMark {
+            position: absolute;
+            z-index: 500;
+            display: none;
+            top: 0px;
+        }
+
+        .mark {
+            background: #000;
+            opacity: 0.8;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            display: none;
+        }
+
+        .markClose {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 0;
+            z-index: 600;
+            display: none;
+        }
+
+        .layui-m-layercont {
+            padding: 0px !important;
+        }
+    </style>
+</head>
+<body ms-controller="myCtl">
+
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">收银台</h1>
+    </header>
+    <div class="mui-content">
+        <div class="mui-card">
+            <div class="mui-card-content">
+                <div class="mui-card-content-inner" style="padding:10px 17px;">
+                    <span style="margin-right: 15px;">需支付</span>
+                    <span class="color-red-md font-17" ms-text="'￥'+PayTotal"></span>
+                </div>
+            </div>
+        </div>
+        <div class="mui-card" data-type="alipay">
+            <div class="mui-card-content addOrder">
+                <div class="mui-card-content-inner mui-text-left">
+                    <img class="card" src="../images/pay/alipay.png" />
+                    <div class="title">
+                        <span class="font-14">使用手机支付宝支付</span>
+                        <p class="font-12" style="margin-right: 30px;">推荐有支付宝账号的用户使用</p>
+                    </div>
+                    <i class="icon-select color-green-light font-22 slt"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="mui-content-padded">
+            <button id="btnPay" class="mui-btn mui-btn-primary mui-btn-block">确定支付</button>
+        </div>
+        <div class="mark" id="mark">
+        </div>
+        <div class="markClose md-icon " id="markClose">
+            <span class="icon-close-4 color-white font-20"></span>
+        </div>
+        <div class="androidMark" id="androidMark">
+            <img src="../images/android.png" style="width:100%;height:100%;" />
+        </div>
+        <div class="androidMark" id="iphoneMark">
+            <img src="../images/iphone.png" style="width:100%;height:100%;" />
+        </div>
+
+        <form id="submitForm" method="post" style="display:none" action="http://222.173.15.182:9991/pay.ashx">
+            <input type="hidden" id="txtOrderNo" name="OrderNo" />
+            <input type="hidden" id="txtPaymentNo" name="PaymentNo" />
+            <input type="hidden" name="Amount" id="txtAccount" />
+            <input type="hidden" name="from" id="txtfrom" value="1" />
+            <input type="hidden" name="OrderId" id="txtOrderId" />
+        </form>
+    </div>
+    <script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.base64.js"></script>
+    <script type="text/javascript" src="../js/avalon.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "myCtl",
+            Params: "",
+            PayTotal: "",
+            UserID: ""
+        });
+
+        $(function () {
+            var params = query("params");
+            var payTotal = query("payTotal");
+
+            vm.UserID = query("userid");
+            vm.Params = JSON.parse($.base64.decode(params));
+            vm.PayTotal = payTotal;
+
+            $("#btnPay").click(pay);
+
+            $(".markClose,#mark,#androidMark,#iphoneMark").click(function () {
+                document.getElementById("mark").style.display = "none";
+                document.getElementById("markClose").style.display = "none";
+                document.getElementById("androidMark").style.display = "none";
+                document.getElementById("iphoneMark").style.display = "none";
+            });
+
+        });
+
+        //支付
+        function pay() {
+
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+
+                document.getElementById("mark").style.display = "block";
+                document.getElementById("markClose").style.display = "block";
+                var u = navigator.userAgent, app = navigator.appVersion;
+                var isAndroid = u.indexOf('Android') > -1 || u.indexOf('linux') > -1; //g
+                var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                if (isAndroid) {
+                    document.getElementById("androidMark").style.display = "block";
+                    document.getElementById("androidMark").style.width = (width - 20) + "px";
+                    document.getElementById("androidMark").style.height = (height - 30) + "px";
+                }
+                if (isIOS) {
+                    document.getElementById("iphoneMark").style.display = "block";
+                    document.getElementById("iphoneMark").style.width = (width - 20) + "px";
+                    document.getElementById("iphoneMark").style.height = (height - 30) + "px";
+                }
+                return;
+            }
+
+            //loading带文字
+            layer.open({
+                content: '<div class="mui-text-center"><span class="mui-spinner"></span ><span style="position: relative; top: -7px;left: 5px;">正在提交</span></div>',
+                style: 'padding:10px;',
+                shadeClose: false,
+            });
+
+
+
+            postAjaxData(MdAppUrl.Api42 + "/api/Order/MobilePay?userId=" + vm.UserID, vm.Params, function (reData) {
+                if (reData.State === 0) {
+                    layer.closeAll();
+                    layer.open({ content: "支付订单失败:" + reData.ErrorMessage });
+                } else {
+                    if (reData.Data.State == 0) {
+                        var data = "OrderNo=" + reData.Data.PayNumber + "&PaymentNo=" + reData.Data.PaySerial + "&Amount=1&from=1&OrderId=" + vm.Params[0].OrderId;
+
+                        postPay(MdAppUrl.Pay + "/pay.ashx", data, function (res) {
+                            layer.closeAll();
+                            if (typeof (res) == "object") {
+                                layer.open({ content: res.ErrorMessage });
+                            }
+                            else {
+                                $("body").append(res);
+                            }
+                        });
+                    }
+                    else if (reData.Data.State == 1)//所有订单都已经支付了
+                    {
+                        //询问框
+                        layer.open({
+                            content: '<div style="padding:30px;line-height:25px;">该订单已经支付！<br/>是否下载迈迪通查看订单？</div>',
+                            btn: ['立即下载', '取消'],
+                            yes: function (index) {
+                                window.location.href = "../down.html";
+                                layer.close(index);
+                            }
+                        });
+                    }
+                    else if (reData.Data.State == 2) {
+                        //询问框
+                        layer.open({
+                            content: '<div style="padding:30px;line-height:25px;">该订单已部分付款！<br/>是否下载迈迪通查看订单？</div>',
+                            btn: ['立即下载', '取消'],
+                            yes: function (index) {
+                                window.location.href = "../down.html";
+                                layer.close(index);
+                            }
+                        });
+                    }
+                    else if (reData.Data.State == 3) {
+                        //询问框
+                        layer.open({
+                            content: '<div style="padding:30px;line-height:25px;">该订单已取消，无法付款！<br/>是否下载迈迪通查看订单详情？</div>',
+                            btn: ['立即下载', '取消'],
+                            yes: function (index) {
+                                window.location.href = "../down.html";
+                                layer.close(index);
+                            }
+                        });
+                    }
+                }
+            }, true);
+        };
+
+        function postPay(url, data, callback) {
+            $.ajax(url, {
+                contentType: "application/x-www-form-urlencoded", //提交到服务器的数据的格式
+                type: "post", //HTTP请求类型
+                timeout: 10000, //超时时间设置为10秒；
+                data: data,
+                crossDomain: true,
+                success: function (data) {
+                    callback(data);
+                },
+                error: function (xhr, type, errorThrown) {
+                    callback({
+                        State: -99,
+                        ErrorMessage: xhr.statusText
+                    });
+                }
+            });
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>提交订单</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+		<link rel="stylesheet" href="../css/pages/submit-order.css" />
+		<link rel="stylesheet" href="../css/info.css" />
+		<link rel="stylesheet" href="../css/pages/select-address.css" />
+		<link rel="stylesheet" href="../css/animate.min.css" />
+		<link rel="stylesheet" href="../css/pages/mapAddress.css" />
+	</head>
+
+	<body ms-controller="appCtrl">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left submitBack"></a>
+			<h1 class="mui-title">提交订单</h1>
+		</header>
+		<div class="mui-scroll-wrapper">
+			<ul class="data-group consignee_info" id="sel_address">
+				<li class="data-row">
+					<a class="body click-gra" ms-if="PostAddr.AddrId > 0">
+						<p class="font-15 mb10" ms-text="PostAddr.RecvUserName"></p>
+						<p class="consignee_info_phone font-15 mb10" ms-text="PostAddr.LinkPhone"></p>
+						<p class="consignee_info_address font-15" ms-text="PostAddr.Address"></p>
+						<p class="opt md-icon icon-right"></p>
+					</a>
+					<a ms-if="!PostAddr.AddrId || PostAddr.AddrId == 0" id="addAddress" style="display: none;">
+						<p class="add_address font-16">点击此处添加收货地址</p>
+						<p class="opt md-icon icon-right"></p>
+					</a>
+				</li>
+				<img src="../images/submit_order_line.png" />
+			</ul>
+			<div class="seller_list" ms-for="order in OrderList">
+				<div class="seller_list_til">
+					<img class="border-f2 seller_til_pic" ms-attr="{src:ImgSrc+'_' + order.CompID + '_20x20.jpg'}" />
+					<span ms-text="order.CompName"></span>
+				</div>
+				<ul class="data-group" ms-for="prod in order.ProdList">
+					<li class="data-row prod_list" ms-attr="{prodid:prod.ProdID}">
+						<a class="body click-gray">
+							<img class="size70 float-left border-f2 bg-f2 mr10" ms-attr="{src:ImgUrl+'/prod/logo/'+prod.ProdID+'_100x100.jpg'}" />
+							<p class="mb10 font-14 seller_ware_til" ms-text="prod.ProdName"></p>
+							<span class="font-13 float-left prod_list_skuname" ms-text="prod.SkuName"></span>
+							<span class="font-13 float-right prod_list_price">￥<span ms-text="prod.Price"></span> X <span ms-text="prod.BuyNums"></span></span>
+						</a>
+					</li>
+					<li class="data-row">
+						<label>总价</label>
+						<div class="body">
+							<span class="float-right seller_num">￥<span class="order_ware_price" ms-text="prod.Total"></span></span>
+						</div>
+					</li>
+					<li class="data-row">
+						<label>运费</label>
+						<div class="body">
+							<span class="float-right seller_num">￥<span class="order_ware_freight" ms-text="prod.TransFee"></span></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<footer class="submit_order_footer">
+			<p class="pay_sum">实付款：￥<span ms-text="PriceTotal"></span></p>
+			<div class="submit_btn">提交订单</div>
+		</footer>
+		<!--选择收货地址页面-->
+		<div class="animated" ms-class="[IsShowSelectAddr==0?'slideInRight':'slideOutRight']" id="selectAddr" style="display: none;">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left selAddrBack"></a>
+				<h1 class="mui-title ">选择收货地址</h1>
+			</header>
+			<div class="mui-scroll-wrapper">
+				<ul class="data-group" style="margin-bottom: 50px;" ms-visible="AddrList&&AddrList.length>0">
+					<li class="data-row" ms-for="(idx,addr) in AddrList">
+						<div class="body select_address_con">
+							<span ms-visible="SelectedID>0&&SelectedID==addr.ID" class="icon-select color-red-md select_address_icon font-18"></span>
+							<div class="select_address_info" ms-attr="{idx:idx}">
+								<span ms-text="addr.RecvUserName"></span>
+								<span ms-text="addr.LinkPhone"></span>
+								<span ms-visible="addr.IsDefault=='1'" class="select_address_defaule font-12">默认</span>
+								<p class="font-13 color-gray-dark" ms-text="addr.Province | contractAddress(addr.City, addr.District,addr.Address)"></p>
+							</div>
+							<p class="opt md-icon icon-edit" ms-attr="{addrId:addr.ID}"></p>
+						</div>
+					</li>
+				</ul>
+				<div class="empty" ms-visible="AddrList&&AddrList.length==0">暂无收货地址，请点击下方按钮新增</div>
+			</div>
+			<footer id="btnAdd" class="font-16 select_addr_footer">新增收货地址</footer>
+		</div>
+		<!---->
+		<!--修改、新增地址页面-->
+		<!---->
+		<div class="animated" ms-class="[IsShowmodifyAddr==0?'slideInRight':'slideOutRight']" id="modifyAddr" style="display: none;">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left modifyBack"></a>
+				<h1 class="mui-title">保存收货地址</h1>
+				<a id="btnDel" ms-visible="!IsAdd" class="mui-icon mui-pull-right lh28 font-17" ms-click="delAddr()">删除</a>
+			</header>
+			<div class="mui-scroll-wrapper">
+				<ul class="data-group">
+					<li class="data-row must">
+						<label>收货人姓名</label>
+						<div class="body">
+							<input id="txtRecvUserName" type="text" maxlength="20" placeholder="请输入收货人姓名" />
+						</div>
+					</li>
+					<li class="data-row must">
+						<label>手机号码</label>
+						<div class="body">
+							<input type="tel" id="txtLinkPhone" maxlength="20" placeholder="请输入收货人手机号码" />
+						</div>
+					</li>
+					<li class="data-row must">
+						<label>收货地址</label>
+						<p class="opt" id="selAddress">
+							<span>修改</span>
+						</p>
+						<div class="body">
+							<span ms-visible="!Province" class="placeholder">请选择收货地址</span>
+							<span>{{Province | contractAddress(City, District,Address)}}</span>
+							<!--<input placeholder="请选择收货地址" value="text" ms-duplex="Province"/>-->
+						</div>
+					</li>
+					<li class="data-row">
+						<label>邮政编码</label>
+						<div class="body">
+							<input id="txtZipCode" type="text" maxlength="20" placeholder="请输入邮政编码" />
+						</div>
+					</li>
+					<li class="data-row">
+						<label>默认地址</label>
+						<div id="isDefault" class="body md-switch-group">
+							<a ms-class="['md-switch-button',IsDefault==1?'md-active':'']" ms-click="setDefault(1)">是</a>
+							<a ms-class="['md-switch-button',IsDefault==1?'':'md-active']" ms-click="setDefault(0)">否</a>
+						</div>
+					</li>
+				</ul>
+				<div class="mui-content-padded">
+					<button id="btnSave" class="mui-btn mui-btn-primary mui-btn-block">保存</button>
+				</div>
+			</div>
+		</div>
+		<!--设置地址页面-->
+		<div ms-controller="mapAddressCtl" class="mapAddress-main  " id="mapAddress-main" style="display:none;">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">选择地址</h1>
+				<a class="mui-icon-right-nav mui-pull-right mui-icon" ms-visible="Control.IsShowSearch==0" id="btn_save">
+					<span class="font-16 color-white">保存</span>
+				</a>
+			</header>
+			<div class="mui-content">
+				<ul class="data-group" style="margin-bottom: 10px;">
+					<li class="data-row chooseArea">
+						<label>所在地市</label>
+						<p class="opt md-icon icon-down"></p>
+						<div class="body">
+							<span class="color-gray" ms-visible="!Address.Province">请选择省市区</span>
+							<span ms-text="Address.Province | contractAddress(Address.City,Address.District)" ms-visible="Address.Province"></span>
+						</div>
+					</li>
+					<li class="data-row">
+						<label>详细地址</label>
+						<p class="opt" id="location_addr" style="display:none;">定位</p>
+						<div class="body">
+							<input id="divAddr" type="text" ms-duplex="Address.Address" placeholder="请输入详细地址" style="width:100%" />
+						</div>
+					</li>
+				</ul>
+			</div>
+
+			<div class="mgTop5 dv_map" id="dv_map">
+				<!--地址搜索框-->
+				<div class="div-search" ms-visible="Map.IsLoadedMap" style="display:none;">
+					<div class="input_box">
+						<p class="font-12 mt-4">搜索地址</p>
+						<!--<input class="ip-search" id="it_address" type="text" />-->
+						<i class="mui-icon mui-icon-search font-19"></i>
+					</div>
+				</div>
+				<div class="map_mark" ms-visible="Map.IsLoadedMap" style="display:none;">
+					<img src="../images/pin-red.png" style="width:30px;" />
+				</div>
+				<div class="location_self" id="location_self" ms-visible="Map.IsLoadedMap" style="display:none;">
+					<span class="md-icon icon-location-2 color-gray-dark"></span>
+				</div>
+				<div ms-text="Map.Address " class="map_address" ms-visible="Map.Address&& Map.IsLoadedMap" style="display:none;"></div>
+				<div id="map_container" class="map_container">
+				</div>
+			</div>
+
+			<footer style="display:none;" ms-class="['animated',Control.IsShowFooter==1?'fadeIn':'fadeOut']">
+				<button id="btnConfirm" class="mui-btn mui-btn-red ">使用该地址</button>
+				<button id="btnCancle" class="mui-btn mui-btn-grey ">取消</button>
+			</footer>
+
+			<div class="search_box" ms-class="['animated',Control.IsShowSearch==1?'slideInRight':'slideOutRight']" style="display:none;">
+				<ul class="data-group">
+					<li class="data-row">
+						<label>搜索地址：</label>
+						<p class="opt mui-icon wth-40" id="btn-search-map">
+							<span class=" mui-icon-search font-19"></span>
+						</p>
+						<div class="body">
+							<input type="text" ms-duplex="Map.SearchAddress" id="it_search" placeholder="请输入搜索关键字" />
+						</div>
+					</li>
+				</ul>
+				<div class="search_result" ms-visible="Map.SearchResult.length>0">
+					<ul class="data-group" style="margin-top: 0px;">
+						<li class="data-row" ms-for="index,obj in Map.SearchResult" ms-attr="{'data-lng':obj.point.lng,'data-lat':obj.point.lat,'data-addr':obj.title}">
+							<div class="body">
+								<p class="font-14" ms-text="obj.title"></p>
+								<p class="font-12" ms-text="obj.address"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="m-cityselect-main" style="display:none;">
+				<div class="m-cityselect-mark"></div>
+				<div class="m-cityselect">
+					<div class="cityselect-header">
+						<p class="cityselect-title">所在地市</p>
+						<div class="cityselect-nav">
+							<a href="javascript:;" data-idx="1" ms-class="[Picker.chooseIdx==1?'crt':'']" ms-text="Picker.province?Picker.province:'请选择'"></a>
+							<a href="javascript:;" data-idx="2" ms-class="[Picker.chooseIdx==2?'crt':'']" ms-text="Picker.city?Picker.city:'请选择'" ms-visible="Picker.province"></a>
+							<a href="javascript:;" data-idx="3" ms-visible="Picker.city && Picker.level==3 && Picker.districtList.length>0" ms-class="[Picker.chooseIdx==3?'crt':'']" ms-text="Picker.district?Picker.district:'请选择'"></a>
+						</div>
+					</div>
+					<ul ms-class="['cityselect-content','cityselect-move-animate',Picker.chooseIdx==3&&Picker.level==3&&Picker.districtList.length>0?'cityselect-next':'cityselect-prev']" id="cityselect-content">
+						<li class="cityselect-item" id="item-province">
+							<div class="cityselect-item-box" data-idx="1">
+								<a ms-class="[Picker.province==obj?'crt':'']" href="javascript:;" ms-attr="{'data-value':obj,'data-idx':index}" ms-for="index,obj in Picker.provinceList"><span ms-text="obj"></span></a>
+							</div>
+						</li>
+						<li class="cityselect-item" id="item-city">
+							<div class="cityselect-item-box" data-idx="2">
+								<a ms-class="[Picker.city==obj?'crt':'']" href="javascript:;" ms-attr="{'data-value':obj,'data-idx':index}" ms-for="index,obj in Picker.cityList"><span ms-text="obj"></span></a>
+							</div>
+						</li>
+						<li class="cityselect-item" id="item-district">
+							<div class="cityselect-item-box" data-idx="3">
+								<a ms-class="[Picker.district==obj?'crt':'']" href="javascript:;" ms-attr="{'data-value':obj,'data-idx':index}" ms-for="index,obj in Picker.districtList"><span ms-text="obj"></span></a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=W6WIQmkWMM7fHZ1bQzONDGwimUikfaPU"></script>
+		<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.base64.js"></script>
+		<script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+		<script type="text/javascript" src="../js/avalon.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/pages/mapAddress.js"></script>
+		<script type="text/javascript" src="../js/pages/cityData.js"></script>
+		<script type="text/javascript" src="../js/pages/submit-order.js"></script>
+	</body>
+
+</html>

@@ -1,0 +1,120 @@
+@charset "utf-8";
+html,body,div,textarea,button,h1,table{
+	margin:0;
+	padding:0;
+	color:#fff;
+	}
+body,html{
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	margin:0 auto;
+	}
+.bg{
+	width:100%;
+	height:100%;
+	position:absolute;
+	z-index:-1;
+	}
+#title{
+	height:100%;
+	overflow-y:scroll;
+
+	}
+.title_bj{
+	width:400px;
+	height:162px;
+	margin:0 auto;
+	}
+#link{
+	background:url(../images/img1.png) no-repeat center top;
+	margin:0 auto;
+	width:320;
+	height:264;
+	padding-bottom:10px;
+
+	}
+.textarea{
+	width:190px;
+	height:90px;
+	margin:0 auto;
+	padding-left:30px;
+	padding-top:30px;
+	overflow:hidden;
+	}
+textarea{
+	width:210px;
+	*width:208px;
+	height:90px;
+	border:none;
+	background:none;
+	outline:none;
+	color:#fff;
+	font-family: Arial, "宋体";
+	font-size:14px;
+	}
+.button{
+	background: url(../images/button.png) no-repeat left top;
+	width:224px;
+	height:65px;
+	display:block;
+	border:0;
+	margin:0 auto;
+	outline:none;
+	cursor:pointer;
+	margin-top:70px;
+	}
+.list{
+	padding-top:20px;
+	width:400px;
+	background-color: rgba(255,255,189,0.5);
+	padding-bottom:40px;
+	margin:0 auto;
+
+	} 
+@media \0screen\,screen\9 {/* 只支持IE6、7、8 */
+  .list{
+    background-color:#ffe8b2;
+    filter:Alpha(opacity=50);
+    position:static; /* IE6、7、8只能设置position:static(默认属性) ，否则会导致子元素继承Alpha值 */
+    *zoom:1; /* 激活IE6、7的haslayout属性，让它读懂Alpha */
+  }
+  .table,h1{
+	position: relative;
+	}
+  }
+
+h1{
+	display:block;
+	margin:0 auto;
+	width:320px;
+	height:50px;
+	font-size:22px;
+	color:#cc2d1e;
+	line-height:50px;
+	font-family: "微软雅黑";
+	text-align:center;
+	font-weight:normal;
+	background: url(../images/h1_bj.png) no-repeat center;
+	margin-bottom:10px;
+	}
+.table{
+	width:360px;
+	margin:0  auto;
+	text-align:center;
+	}
+table th{
+	width:120px;
+	border-bottom:1px solid #fff;
+	line-height:40px;
+	height:40px;
+	}
+table tr{
+	border-bottom:1px solid #fff;
+	 
+	text-align:center;
+	line-height:30px;
+	
+	}
+
+ 

@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>迈迪通下载</title>
+    <link rel="stylesheet" type="text/css" href="css/down.css" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=640px, user-scalable=no" />
+</head>
+<script>
+    //    setInterval(function () {
+    //        var iWidth = document.documentElement.getBoundingClientRect().width;
+    //        document.getElementsByTagName("html")[0].style.fontSize = iWidth / 10 + "px";
+    //    }, 1000);
+
+    window.onload = function () {
+        var height = (window.innerHeight > 0) ? window.innerHeight : screen.innerHeight;
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.innerWidth;
+        document.getElementById("downContent").style.Height = height + "px";
+
+
+
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+
+            document.getElementById("mark").style.display = "block";
+            var u = navigator.userAgent, app = navigator.appVersion;
+            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('linux') > -1; //g
+            var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            if (isAndroid) {
+                document.getElementById("androidMark").style.display = "block";
+                document.getElementById("androidMark").style.width = (width - 20) + "px";
+                document.getElementById("androidMark").style.height = (height - 30) + "px";
+            }
+            if (isIOS) {
+                document.getElementById("iphoneMark").style.display = "block";
+                document.getElementById("iphoneMark").style.width = (width - 20) + "px";
+                document.getElementById("iphoneMark").style.height = (height - 30) + "px";
+            }
+        }
+    };
+
+  
+</script>
+<body>
+    <div class="mark" id="mark">
+    </div>
+    <div class="androidMark" id="androidMark">
+        <img  src="/images/android.png" style="width:100%;height:100%;"/>
+    </div>
+    <div class="androidMark" id="iphoneMark">
+        <img  src="/images/iphone.png" style="width:100%;height:100%;"/>
+    </div>
+    <div class="down-app" id="downContent">
+        <div class="mdt-top">
+            <div class="mdt">
+                <img src="/images/logo.png" /></div>
+        </div>
+        <div class="mdTool">
+            <img src="/images/title.png" /></div>
+        <div class="android-down">
+            <a href="http://www.maidiyun.com/update/phone/MDT.apk">
+                <img src="/images/android_btn.png" /></a></div>
+        <div class="ios-down">
+            <a href="https://itunes.apple.com/cn/app/mai-di-tong-gong-ye-qi-ye/id1133075946?mt=8">
+                <img src="/images/app_btn.png" /></a></div>
+    </div>
+</body>
+</html>

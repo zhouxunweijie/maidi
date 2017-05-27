@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>测试短信以及LocalStorage</title>
+    <link rel="stylesheet" href="css/mui.min.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/animate.min.css" />
+    <link rel="stylesheet" href="css/info.css" />
+
+</head>
+<body ms-controller="myCtl">
+    <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">测试短信以及LocalStorage</h1>
+    </header>
+    <div class="mui-scroll-wrapper">
+        <ul class="data-group">
+            <li class="data-row">
+                <label>手机号</label>
+                <div class="body">
+                    <input type="tel" maxlength="20" class="mui-input" placeholder="请输入手机号" ms-duplex="Phone">
+                </div>
+            </li>
+            <li class="data-row">
+                <label>验证码</label>
+                <div class="body">
+                    <input type="text" maxlength="10" class="mui-input" placeholder="请输入验证码" ms-duplex="IdtCode">
+                </div>
+                <p class="opt color-blue wth-90" id="btn-idtCode" ms-text="Countdown==60?'获取验证码':Countdown+'s'">
+                </p>
+            </li>
+            <li class="data-row">
+                <label>获取到的验证码</label>
+                <div class="body" ms-text="PhoneCode">
+
+                </div>
+            </li>
+        </ul>
+
+        <div class="mui-content-padded">
+            <button id='btn-check-code' class="mui-btn mui-btn-primary mui-btn-block">验证手机验证码</button>
+        </div>
+
+        <ul class="data-group">
+            <li class="data-row">
+                <label>存入local值</label>
+                <div class="body">
+                    <input type="tel" maxlength="20" class="mui-input" placeholder="请输入" ms-duplex="LocalJson">
+                </div>
+            </li>
+            <li class="data-row">
+                <label>获取local值</label>
+                <div class="body" ms-text="GetLocalJson">
+                </div>
+            </li>
+        </ul>
+
+        <div class="mui-content-padded">
+            <button id='btn-save-local' class="mui-btn mui-btn-primary mui-btn-block">存入localStrorage</button>
+        </div>
+
+        <div class="mui-content-padded">
+            <button id='btn-chooseUser' class="mui-btn mui-btn-primary mui-btn-block">选择用户</button>
+        </div>
+
+        <div class="mui-content-padded">
+            <button id='btn-get-local' class="mui-btn mui-btn-primary mui-btn-block">获取localStrorage</button>
+        </div>
+
+        <div class="mui-content-padded">
+            <button id='btn-pay' class="mui-btn mui-btn-primary mui-btn-block">支付</button>
+        </div>
+
+        <input type="file" id="choose" accept="image/*">
+
+        <input type="file" accept="image/*" capture="camera">
+
+        <input type="file" accept="audio/*" capture="microphone">
+    </div>
+
+    <div ms-controller="ChooseUserCtl" id="div-chooseUser-main">
+        <div id="div-chooseUser-info" ms-class="['animated','div-chooseUser-main',IsShowMain==1?'slideInRight':'slideOutRight']" style=" display:none;">
+            <header class="mui-bar mui-bar-nav">
+                <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+                <h1 class="mui-title">完善信息</h1>
+            </header>
+            <div class="mui-content">
+                <ul class="data-group">
+                    <li class="data-row">
+                        <label>手机号</label>
+                        <div class="body">
+                            <input type="text" maxlength="11" placeholder="请输入手机号" ms-duplex="Phone" />
+                        </div>
+                    </li>
+                    <li class="data-row">
+                        <label>验证码</label>
+                        <div class="body">
+                            <input type="text" placeholder="请输入验证码" ms-duplex="Code" />
+                        </div>
+                        <p class="md-icon opt color-blue wth90" id="btn-idtCode" ms-text="Countdown==60?'获取验证码':Countdown+'s后获取'" ms-click="getCode"></p>
+                    </li>
+                </ul>
+                <div class="mui-content-padded">
+                    <button id="btn-confirm-info" class="mui-btn mui-btn-primary mui-btn-block" ms-click="btnConfirmInfo">确定</button>
+                </div>
+            </div>
+        </div>
+        <div ms-class="['animated','div-chooseUser-main',IsShowChoose==1?'slideInRight':'slideOutRight']" style="display:none" id="div-chooseUser-list">
+            <header class="mui-bar mui-bar-nav">
+                <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+                <h1 class="mui-title">选择用户</h1>
+            </header>
+            <div class="mui-content">
+                <ul class="mui-table-view" id="user_list">
+                    <li class="mui-table-view-cell chooseUser" ms-attr="{idx:index}" ms-for="(index,user) in Datas">
+                        <a href="javascript:;">
+                            <img class="mui-media-object mui-pull-left" style="width: 40px;" ms-attr="{src:getUserLogo(user.UserID)}">
+                            <div class="mui-media-body">
+                                <span style="color: #000000;font-size: 15px;" ms-text="user.UserName||user.RealName||user.Mdt"></span>
+                                <p ms-text="user.Mdt"></p>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <form id="submitForm" method="post" style="display:none" action="http://222.173.15.182:9991/pay.ashx">
+        <input type="hidden" id="txtOrderNo" name="OrderNo" />
+        <input type="hidden" id="txtPaymentNo" name="PaymentNo" />
+        <input type="hidden" name="Amount" id="txtAccount" />
+        <input type="hidden" name="OrderId" id="txtOrderId" />
+    </form>
+
+   
+
+    <script type="text/javascript" src="/js/avalon.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookies.js"></script>
+    <script type="text/javascript" src="/js/jquery.base64.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+
+    <script type="text/javascript" src="/js/chooseUser.js"></script>
+
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "myCtl",
+            Phone: "",
+            IdtCode: "",
+            PhoneCode: "",
+            Countdown: 60,
+            LocalJson: "",
+            GetLocalJson: ""
+        });
+
+        $(function () {
+
+            user.ready(function () {
+
+                if (!user.token) {
+                    showChooseUser(function (user) {
+                        alert(JSON.stringify(user));
+                    });
+                }
+                else {
+
+                }
+            });
+
+            initEvent();
+        });
+
+        //注册事件
+        function initEvent() {
+            $("#btn-idtCode").click(function () {
+                if (vm.Countdown != 60) {
+                    return;
+                }
+                if (!vm.Phone) {
+                    layer.open({
+                        content: '请输入手机号'
+                        , skin: 'msg'
+                        , time: 2 //2秒后自动关闭
+                    });
+                    return;
+                }
+
+                $("#btn-idtCode").addClass("color-gray-deep").removeClass("color-blur");
+
+                var intvl = setInterval(function () {
+                    vm.Countdown -= 1;
+                    if (vm.Countdown == 0) {
+                        $("#btn-idtCode").removeClass("color-gray-deep").addClass("color-blur");
+                        vm.Countdown = 60;
+                        clearInterval(intvl);
+                    }
+                }, 1000);
+
+                var url = MdAppUrl.Api + "/u/validRegPhone?phone=" + $.trim(vm.Phone);
+                getAjaxData(url, function (reData) {
+                    setTimeout(function () {
+                        if (reData.State == 0) {
+                            layer.alert(reData.Message);
+                        } else {
+                            vm.PhoneCode = reData.Data;
+                        }
+                    }, 1000);
+                });
+            });
+
+            $("#btn-chooseUser").click(function () {
+                chooseUser.show(function (user) {
+                    console.log(user);
+                });
+            });
+            $("#btn-check-code").click(function () {
+                if (!vm.IdtCode) {
+                    layer.open({
+                        content: '请输入验证码'
+                        , skin: 'msg'
+                        , time: 2 //2秒后自动关闭
+                    });
+                    return;
+                }
+
+                if (vm.PhoneCode == vm.IdtCode) {
+                    layer.open({
+                        content: '您输入的是正确的'
+                        , btn: '确定'
+                    });
+                }
+                else {
+                    layer.open({
+                        content: '您输入的验证码不正确'
+                        , btn: '确定'
+                    });
+                }
+            });
+
+            $("#btn-save-local").click(function () {
+                if (!vm.LocalJson) {
+                    layer.open({
+                        content: "请输入您要存入的JSON数据",
+                        skin: 'msg',
+                        time: 2
+                    });
+                    return;
+                }
+
+                localSave("localSave", vm.LocalJson, true);
+            });
+
+            $("#btn-get-local").click(function () {
+                var json = localGet("localSave");
+                vm.GetLocalJson = JSON.stringify(json);
+            });
+
+            $("#btn-pay").click(function () {
+                var params = [{ "PayPlanID": "", "OrderID": "2017052511000008" }];
+                postAjaxData(MdAppUrl.Api42 + "/api/Order/Pay", params, function (reData) {
+
+                    if (reData.State === 0) {
+                        layer.open({
+                            content: reData.ErrorMessage,
+                            skin: 'msg',
+                            time: 2
+                        });
+                    } else {
+
+                        var data = "OrderNo=" + reData.Data.PaySerial + "&PaymentNo=" + reData.Data.PayNumber + "&Amount=1" + "&OrderId=2017052511000008";
+
+                        PostPay(MdAppUrl.Pay + "/pay.ashx", data, function (res) {
+                            //console.log(res);
+                            $("body").append(res1);
+                        });
+
+                    }
+                }, true);
+            });
+        };
+
+        function PostPay(url, data, callback) {
+            jQuery.support.cors = true;
+            $.ajax(url, {
+                contentType: 'application/x-www-form-urlencoded', //提交到服务器的数据的格式
+                type: "POST", //HTTP请求类型
+                timeout: 10000, //超时时间设置为10秒；
+                data: data,
+                crossDomain: true,
+                success: function (data) {
+                    callback(data);
+                },
+                error: function (xhr, type, errorThrown) {
+                    callback({
+                        State: -99,
+                        ErrorMessage: xhr.statusText
+                    });
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

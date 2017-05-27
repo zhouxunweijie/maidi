@@ -1,0 +1,945 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ng="needed for ng: namespace" id="ng-app" ng-app="mdApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>企业名片</title>
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+    <link rel="stylesheet" type="text/css" href="../css/company.css">
+    <style type="text/css">
+        .titleRight
+        {
+            margin-top: 10px;
+        }
+        .titleRight a
+        {
+            border: 1px solid #db424e;
+            background: #f7f7f7;
+            line-height: 20px;
+            padding: 5px;
+            color: #e16670;
+        }
+        #downOffLine ul
+        {
+            position: relative;
+            z-index: 50000;
+            height: 30px;
+            display: none;
+        }
+        #downOffLine ul li
+        {
+            padding-bottom: 5px;
+            position: relative;
+        }
+        .downAllLocal
+        {
+            position: absolute;
+            top: -26px;
+            z-index: -1;
+            display: none;
+        }
+        
+        .downOffline
+        {
+            width: 136px;
+            float: right;
+            position: relative;
+            z-index: 5000;
+            display: none;
+        }
+        .downOffline ul
+        {
+            position: relative;
+        }
+        .downOffline ul li
+        {
+            width: 136px;
+            height: 44px;
+            cursor: pointer;
+        }
+        .downOffline ul .downDesigner
+        {
+            background: url(../images/downDesigner.png);
+        }
+        .downOffline ul .downDesigner:hover
+        {
+            background: url(../images/downDesignerHover.png);
+        }
+        .downOffline ul .downLocal
+        {
+            background: url(../images/downLocal.png);
+            position: absolute;
+            z-index: 5;
+            height: 0px;
+        }
+        .downOffline ul .downLocal:hover
+        {
+            background: url(../images/downLocalHover.png);
+        }
+        .addRes span
+        {
+            float: right;
+            width: 44px;
+            height: 44px;
+            background: url(../images/addRes.png);
+            display: block;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .addRes span:hover
+        {
+            background: url(../images/addResHover.png);
+        }
+        .contract span
+        {
+            float: right;
+            width: 44px;
+            height: 44px;
+            background: url(../images/contract.png);
+            display: block;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .contract span:hover
+        {
+            background: url(../images/contractHover.png);
+        }
+        .layui-layer-ico{background:none!important;}
+        .layui-layer-close1{background:url('../images/icon_close_red.png')!important;width:19px!important;height:19px!important;}
+        .layui-layer-setwin{top:8px!important;}
+        .layui-layer-title{height:35px!important;line-height:35px!important;}
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+
+
+            var oCpn = document.getElementById('cp-name');
+            var oCpt = document.getElementById('cp-title');
+            var oCpimg = oCpt.getElementsByTagName('img')[0];
+
+
+            oCpn.onmouseover = function () {
+                this.style.left = '0px';
+                oCpimg.src = '../img/left.png';
+            }
+            oCpn.onmouseout = function () {
+                this.style.left = '-186px';
+                oCpimg.src = '../img/right.png';
+            }
+            var oNav = document.getElementById('company-nav');
+            var aLi = oNav.getElementsByTagName('li');
+            var aCwrap = getByClass(document, 'company-wrap');
+            for (var i = 0; i < aLi.length; i++) {
+                aLi[i].index = i
+                aLi[i].onclick = function () {
+                    for (var i = 0; i < aLi.length; i++) {
+                        aLi[i].className = '';
+                        aCwrap[i].style.display = 'none';
+                    }
+                    this.className = 'active';
+                    aCwrap[this.index].style.display = 'block';
+                }
+            }
+            function getByClass(oParent, sClass) {
+                var arr = [];
+                var aEle = oParent.getElementsByTagName('*');
+                var re = new RegExp('\\b' + sClass + '\\b');
+                for (var i = 0; i < aEle.length; i++) {
+                    if (re.test(aEle[i].className)) {
+                        arr.push(aEle[i]);
+                    }
+                }
+                return arr;
+            }
+            var oCpList = getByClass(document, 'cp-list')[0];
+            var arrLi = oCpList.getElementsByTagName('li');
+            for (var i = 0; i < arrLi.length; i++) {
+                arrLi[i].onmouseover = function () {
+                    this.getElementsByTagName('p')[0].style.color = '#ed1724';
+                }
+                arrLi[i].onmouseout = function () {
+                    this.getElementsByTagName('p')[0].style.color = '#666';
+                }
+            }
+        }
+    </script>
+</head>
+<body ng-controller="companyCtl">
+    <div class="company" id="comp">
+        <div class="company-top">
+            <div class="company-top-left">
+                <img ng-src="{{ds.compInfo.compLogo}}" />
+                <div class="company-info">
+                    <h6>
+                        <label ng-bind="ds.compInfo.CompName">
+                        </label>
+                        <span>
+                            <img src="../img/rz.png" ng-if="ds.compInfo.JoinLevel>0" />
+                            <img src="../img/wrz.png" ng-if="ds.compInfo.JoinLevel==0" /></span></h6>
+                    <p>
+                        <span class="mdnum">迈迪通：<span ng-bind="ds.compInfo.Mdt"></span></span><span>电话：<span
+                            ng-bind="ds.compInfo.Tel"></span></span></p>
+                    <strong>地址：<span ng-bind="ds.compInfo.Province"></span><span ng-bind="ds.compInfo.City"></span></strong>
+                </div>
+            </div>
+            <div class="company-top-right">
+                <!-- <div class="titleRight hd" id="downOffLine">
+                    <ul>
+                        <li><a href="javascript:" class="downOffline">使用迈迪设计宝下载企业模型包</a></li>
+                        <li class="downAllLocal"><a href="javascript:">下载到本地...</a></li>
+                    </ul>
+                </div>
+                <div style="">
+                    <div class="join">
+                        <a href="#" class="addRes" attrmdt="{{ds.compInfo.Mdt}}">加为资源</a></div>
+                    <div id="exchange">
+                        <h6 class="taclComp" attrmdt="{{ds.compInfo.Mdt}}">
+                            我要咨询</h6>
+                        <div id="exchange-list">
+                            <ul id="exchange-ul">
+                                <!--  <li>
+                                <img src="../img/picAfterSale.png" /><span>售后服务</span></li>
+                            <li>
+                                <img src="../img/picBussinessAsk.png" /><span>业务咨询</span></li>
+                            <li>
+                                <img src="../img/picSuppor.png" /><span>技术支持</span></li>
+                            <li>
+                                <img src="../img/picElseBusiness.png" /><span>其他业务</span></li>
+                            <li>
+                                <img src="../img/picAfterSale.png" /><span>售后服务</span></li>
+                            <li>
+                                <img src="../img/picBussinessAsk.png" /><span>业务咨询</span></li>
+                            <li>
+                                <img src="../img/picSuppor.png" /><span>技术支持</span></li>
+                            <li>
+                                <img src="../img/picElseBusiness.png" /><span>其他业务</span></li>
+                            <li>
+                                <img src="../img/picAfterSale.png" /><span>售后服务</span></li>
+                            <li style="border-bottom: none;">
+                                <img src="../img/picBussinessAsk.png" /><span>业务咨询</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                </div>-->
+                <div class="contract">
+                    <span></span>
+                </div>
+                <div class="addRes">
+                    <span></span>
+                </div>
+                <div class="downOffline">
+                    <ul>
+                        <li class="downDesigner"></li>
+                        <li class="downLocal"></li>
+                    </ul>
+                </div>
+                <div class="clear">
+                </div>
+            </div>
+        </div>
+        <ul id="company-nav">
+            <li class="active" tabid="compInfo" idx="0"><strong>企业介绍</strong><span>|</span></li>
+            <li tabid="productsInfo" idx="1"><strong>产品列表</strong><span>|</span></li>
+            <li idx="2" tabid="tabNews"><strong>新闻动态</strong><span>|</span></li>
+            <li idx="3" tabid="tabMessage"><strong>在线留言</strong></li>
+        </ul>
+        <div class="company-wrap" id="compInfo">
+            <div class="clear comp-mess">
+                <h6>
+                    主营产品</h6>
+                <p ng-bind="ds.compInfo.MainProduct">
+                </p>
+            </div>
+            <div class="clear comp-mess">
+                <h6>
+                    应用领域</h6>
+                <p ng-bind="ds.compInfo.AppArea">
+                </p>
+            </div>
+            <div class="comp-mess">
+                <h6>
+                    资质证书</h6>
+                <span class="company-img">
+                    <img ng-src="{{x.certImg}}" ng-init="GetCertImg(x)" ng-repeat="x in ds.companyCert" />
+                </span>
+            </div>
+            <div class="clear" id="comp-introduce">
+                <h5>
+                    企业介绍</h5>
+                <p id="comp-intro">
+                </p>
+            </div>
+        </div>
+        <div class="company-wrap" style="display: none;" id="productsInfo">
+            <div id="cp-name">
+                <div id="cp-nlist">
+                    <ul class="md-tree">
+                    </ul>
+                </div>
+                <div id="cp-title">
+                    产品目录<img src="../img/right.png" /></div>
+            </div>
+            <ul class="cp-list clear">
+                <li ng-repeat="x in ds.products"><a ng-href="" ng-click="openProd(x.ProdID,x.PromoteName || x.ProdName)">
+                    <span style="display: none;" ng-bind="GetPkgLog(x)"></span>
+                    <img ng-src="{{x.pkgImg}}" />
+                    <p>
+                        {{x.PromoteName || x.ProdName}}</p>
+                    <div>
+                        <span>{{x.CommentNums}}人点评</span><strong>{{x.Views}}人访问</strong>
+                    </div>
+                </a></li>
+            </ul>
+            <div id="prodPager">
+            </div>
+        </div>
+        <div class="company-wrap" style="display: none;" id="tabNews">
+            <ul class="cp-news">
+                <li ng-repeat="x in ds.news">
+                    <h6>
+                        <a ng-href="http://{{ds.compInfo.Domain || ds.compInfo.Mdt}}.maidiyun.com/news/?id={{x.ID}}&from=sjb.webbrowser"
+                            target="_blank">{{x.Title}}</a></h6>
+                    <span ng-bind="GetPDate(x.CreateTime)"></span></li>
+            </ul>
+            <div id="newsPager">
+            </div>
+        </div>
+        <div class="company-wrap" id="tabMessage" style="display: none;">
+            <div class="message-wrap">
+                <div class="form">
+                    <p>
+                        <span>
+                            <label>
+                                您的姓名</label><input id="UserName" type="text" /></span> <span class="phone">
+                                    <label>
+                                        联系电话</label><input id="Phone" type="text" /></span>
+                    </p>
+                    <p>
+                        <label>
+                            E-mail</label><input id="Email" type="text" /></p>
+                    <div class="msg">
+                        <label>
+                            留言内容</label><textarea id="Content"></textarea></div>
+                    <strong id="submitMessage" ng-click="submitMessage()">提&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交</strong>
+                </div>
+            </div>
+            <!--   <ul class="cp-message">
+                <li class="clear cp-messageList" ng-repeat="x in ds.message track by $index">
+                    <div class="clear">
+                        <span style="display: none;" ng-bind="UserLog(x,x.CreateUser)"></span>
+                        <div class="mess-img">
+                            <img ng-src="{{x.UserLog}}" /></div>
+                        <div class="mess-wrap clear">
+                            <h6>
+                                <strong>{{x.CreateUserName}}</strong><span ng-bind="GetPDate(x.CreateDate)"></span></h6>
+                            <p>
+                                {{x.Content}}</p>
+                        </div>
+                    </div>
+                    <ul class="proReply-list">
+                        <li class="clear" ng-repeat="d in ds.reply[$index]">
+                            <div class="proReply-left">
+                                <span style="display: none" ng-bind="UserLog(d,d.ReplyUser)"></span>
+                                <img ng-src="{{d.UserLog}}" />
+                            </div>
+                            <div class="proReply-right">
+                                <div class="proReply-title">
+                                    <h6 class="">
+                                        {{x.ReplyUserName}}</h6>
+                                    <span ng-bind="GetPDate(d.ReplyDate)"></span>
+                                </div>
+                                <p>
+                                    {{d.ReplyText}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="showMessageMore" ng-if="x.Reply.length > 5" idx="{{$index}}" attrid="{{x.ID}}">
+                        加载更多...
+                    </div>
+                </li>
+            </ul>
+            <div id="messagePager">
+            </div>-->
+        </div>
+    </div>
+    <iframe name="blank" width="0" height="0" frameborder="0" scrolling="no"></iframe>
+</body>
+</html>
+<!--[if lte IE 8]>
+        <script>
+            document.createElement('ng-include');
+            document.createElement('ng-pluralize');
+            document.createElement('ng-view');
+
+            // Optionally these for CSS
+            document.createElement('ng:include');
+            document.createElement('ng:pluralize');
+            document.createElement('ng:view');
+        </script>
+    <![endif]-->
+<script type="text/javascript" src="../js/angular.min.js"></script>
+<script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../js/app.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript" src="http://g.maidiyun.com/js/jquery.cookies.js"></script>
+<script type="text/javascript" src="http://g.maidiyun.com/js/jquery.base64.js"></script>
+<script type="text/javascript" src="http://g.maidiyun.com/js/v3/global.js"></script>
+<script type="text/javascript" src="http://g.maidiyun.com/js/layer/layer.js"></script>
+
+<script>
+    var mdApp = angular.module('mdApp', []).config(function ($sceProvider, $httpProvider) {
+        // Completely disable SCE to support IE7.
+        $sceProvider.enabled(false);
+    });
+    function gGet(url, callback) {
+        $.ajax({
+            url: url,
+            dataType: 'jsonp',
+            type: "GET",
+            jsonp: 'jsonpcallback',
+            success: function (reData) {
+                if (typeof callback != "function")
+                    return;
+                callback(reData);
+            }
+        });
+    };
+</script>
+<script type="text/javascript">
+    var args = getUrlParams();
+    var userId = args["userid"];
+    var ds = {};
+    var header = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
+    $(function () {
+
+        $(".downOffline ul").hover(function () {
+            $(this).find("li").eq(1).stop().animate({ "height": "44px" }, 100);
+        }, function () {
+            $(this).find("li").eq(1).stop().animate({ "height": "0px" }, 100);
+        });
+
+        $(".downOffline ul li:eq(1)").click(function () {
+            window.open("http://download.maidiyun.com/Y29tcC9vZmZsaW5lbG9jYWw=_" + ds.compInfo.ID + ".zip", "blank");
+        });
+
+        $(".downOffline ul li:eq(0)").click(function () {
+            window.open("md://message/?action=offlinepackage&mdt=" + ds.compInfo.ID + "&userid=" + user.userid() + "&v=2", "blank");
+        });
+
+        $(".addRes span").live("click", function () {
+            var mdt = $(this).attr("attrMdt");
+            window.open("md://message/?action=resource&mdt=" + ds.compInfo.Mdt + "&userid=" + user.userid() + "&v=2", "blank");
+        });
+
+        $(".contract span").click(function () {
+            var mdt = $(this).attr("attrMdt");
+            window.open("md://message/?action=talk&mdt=" + ds.compInfo.Mdt + "&userid=" + user.userid() + "&v=2", "blank");
+        });
+
+        $("#company-nav li").click(function () {
+            var idx = $(this).attr("idx");
+
+            activeTab(idx);
+        });
+
+        activeTab(1);
+    });
+
+    function activeTab(idx) {
+        var activeId = $("#company-nav li.active").attr("tabId");
+        $("#" + activeId).hide();
+        $("#company-nav li.active").removeClass("active");
+
+        $("#company-nav li").eq(idx).addClass("active");
+        var needActive = $("#company-nav li").eq(idx).attr("tabId");
+        $("#" + needActive).show();
+    };
+    mdApp.controller('companyCtl', function ($scope, $http) {
+        ds.http = $http;
+        ds.scope = $scope;
+        ds.compInfo = {}; //企业基本信息
+        ds.companyCert = []; //企业资质认证
+        ds.products = []; //企业产品信息
+        ds.prodDic = []; //企业的目录
+        ds.news = []; //企业新闻
+        ds.message = []; //企业留言
+        ds.reply = []; //企业留言回复
+        $scope.ds = ds;
+        compInfo(); //获取企业的基本信息
+        $scope.GetCertImg = function (obj) {
+            if (obj) {
+                obj.certImg = MDApp.url.pic + "/Y29tcC9maWxlcw==_" + obj.compid + "_" + obj.id + "_128x100.jpg";
+            }
+        }; //获取企业资质证书的图片地址
+        $scope.GetPkgLog = function (obj) {
+            if (obj) {
+                obj.pkgImg = MDApp.url.pic + "/cGtnL2xvZ28=_" + obj.ProdID + "_145x110.jpg";
+            }
+        }; //获取企业产品列表的图片地址
+        $scope.GetPDate = function (date) {
+            return GetDate(date, true);
+        }; //获取留言的时间
+        $scope.UserLog = function (obj, id) {
+            obj.UserLog = MDApp.url.pic + "/dXNlci9sb2dv_" + id + "_58x58.jpg";
+        }; //获取留言的用户头像
+        //提交用户留言信息
+        $scope.submitMessage = function () {
+            submitMessage();
+        };
+        $scope.openProd = function ( prodid,prodName) {
+
+            var domain = ds.compInfo.Domain || ds.compInfo.Mdt;
+            //弹出即全屏
+            var index = layer.open({
+                type: 2,
+                title: prodName,
+                area:["995px","725px"],
+                content: 'http://item.maidiyun.com/?id=' + prodid + '&from=sjb.webbrowser',
+                maxmin: false
+            });
+            layer.full(index);
+
+            // http://{{ds.compInfo.Domain || ds.compInfo.Mdt}}.maidiyun.com/item/?id={{x.ProdID}}&from=sjb.webbrowser
+        };
+    });
+    var compInfo = function () {
+        var url = MDApp.url.api + "/comp/?qybs=" + args["qybs"] + "&from=admin";
+        var data = {};
+        MDLoadDatas(ds.scope, ds.http, url, data, function () {
+            if (data.source.State > 0) {
+                ds.compInfo = data.source.Data;
+                ds.compInfo.compLogo = MDApp.url.pic + "/Y29tcC9sb2dv_" + ds.compInfo.ID + "_100x60.jpg";
+
+                gGet("http://download.maidiyun.com/isOffLine?compid=" + ds.compInfo.ID, function (data) {
+                    if (data.State == 1 && data.Data == "true") {
+                        $(".downOffline").show();
+                    }
+                    else {
+                        $(".downOffline").hide();
+                    }
+                });
+
+                //获取企业的基本信息，包括名称、电话、迈迪通号、地区和简介
+                $('#comp-intro').html(ds.compInfo.Intro);
+                companyCert();
+                products.load(1, 18);
+                news(1, 20);
+                //message.load(1, 10);
+                loadDics();
+                init();
+            }
+        }, 1);
+    };
+
+    //调用企业的资质证书
+    var companyCert = function () {
+        var url = "http://api.maidiyun.com/comp/companyCertif?compid=" + ds.compInfo.ID;
+        var data = {};
+        MDLoadDatas(ds.scope, ds.http, url, data, function () {
+            if (data.source.State > 0) {
+                for (var i = 0; i < 4; i++) {
+                    ds.companyCert.push(data.source.Data[i]);
+                }
+            }
+        }, 1);
+    };
+
+    //调用企业的产品
+    var gid = "";
+    var products = {
+        load: function (page, count) {
+            var url = MDApp.url.api + "/search/?page=" + page + "&count=" + count + "&compid=" + ds.compInfo.ID + "&gid=" + gid;
+            var data = {};
+            MDLoadDatas(ds.scope, ds.http, url, data, function () {
+                ds.products = [];
+                if (data.source.State > 0) {
+                    ds.products = data.source.Rows;
+                    pageWrap("prodPager", page, count, data.source.Count, products.load);
+                }
+            }, 1);
+        }
+    };
+
+    //调用企业的新闻
+    var news = function (page, count) {
+        var url = MDApp.url.api + "/comp/news?page=" + page + "&count=" + count + "&compid=" + ds.compInfo.ID;
+        var data = {};
+        MDLoadDatas(ds.scope, ds.http, url, data, function () {
+            if (data.source.State > 0) {
+                ds.news = data.source.Rows;
+                pageWrap("newsPager", page, count, data.source.Count, news);
+            }
+        }, 1);
+    };
+
+    //调用企业的留言
+    var commentReplys = []; //页码存放对象
+    var message = {
+        load: function (page, count) {
+            var url = MDApp.url.api + "/comp/message?page=" + page + "&count=" + count + "&compid=" + ds.compInfo.ID + "&replyPage=1&replyCount=5";
+            var data = {};
+            MDLoadDatas(ds.scope, ds.http, url, data, function () {
+                ds.message = [];
+                ds.reply = [];
+                angular.forEach(data.source.Rows, function (obj) {
+                    ds.message.push(obj);
+                    ds.reply.push(obj.Reply);
+                    commentReplys.push(2);
+                });
+                pageWrap("messagePager", page, count, data.source.Count, message.load);
+            }, 1);
+        }
+    };
+
+    //调用企业的留言回复列表
+    var replys = {
+        count: 5,
+        load: function (page, idx, msgid, obj) {
+            var url = MDApp.url.api + "/comp/messagereply?page=" + page + "&count=" + replys.count + "&msgid=" + msgid;
+            var data = {};
+            MDLoadDatas(ds.scope, ds.http, url, data, function () {
+                if (data.source.State > 0) {
+                    angular.forEach(data.source.Rows, function (obj) {
+                        ds.reply[idx].push(obj);
+                    });
+                    page += 1;
+                    commentReplys[idx] = page;
+                    if (obj) {
+                        if (data.source.Rows.length < replys.length) {
+                            obj.hide();
+                        }
+                    }
+                }
+            }, 1);
+        }
+    };
+
+    //产品列表的无限极分类
+    var loadDics = function () {
+        var url = MDApp.url.api + "/comp/groups?compid=" + ds.compInfo.ID;
+        var data = {};
+        MDLoadDatas(ds.scope, ds.http, url, data, function () {
+            if (data.source.State > 0) {
+                dicHtmls.push("<li gid=''><span></span><a  class='.click' childs='0'>所有产品</a></li>");
+                GetDic(data.source.Data);
+
+                $(".md-tree").html(dicHtmls.join(""));
+            }
+        }, 1);
+    };
+
+    function init() {
+        $(document).on("click", ".showMessageMore", function () {
+            var id = $(this).attr("attrid");
+            var idx = $(this).attr("idx");
+            replys.load(commentReplys[idx], idx, id, $(this));
+        });
+
+        $(".md-tree").on("click", "span.arrow", function (ev) {
+            var ev = ev || event;
+            $(this).parent().toggleClass("opened");
+            ev.stopPropagation();
+        });
+        $(".md-tree").on("click", "li", function (ev) {
+            var id = $(this).attr("gid");
+            gid = id;
+            products.load(1, 18);
+            ev.stopPropagation();
+        });
+    };
+    var dicHtmls = [];
+    function GetDic(dic) {
+        $.each(dic, function () {
+            dicHtmls.push("<li gid=\"" + this.spath + "\">");
+
+            if (this.childs.length > 0) {
+                dicHtmls.push("<span class=\"arrow\"></span>");
+            }
+            else {
+                dicHtmls.push("<span></span>");
+            }
+
+            dicHtmls.push("<a class='.click' childs=\"" + this.childs.length + "\">" + this.sname + "</a>");
+
+            if (this.childs.length > 0) {
+                dicHtmls.push("<ul>");
+                GetDic(this.childs);
+                dicHtmls.push("</ul>");
+            }
+            dicHtmls.push("</li>");
+        });
+
+    };
+
+    var submitMessage = function () {
+        var data = {};
+
+        data.CreateUserName = $("#UserName").val();
+        data.CreatePhone = $("#Phone").val();
+        data.CreateEmail = $("#Email").val();
+        data.Content = $("#Content").val();
+        if (data.CreateUserName == "" || data.CreatePhone == "" || data.CreateEmail == "" && data.Content == "") {
+            alert("请填入完整的数据");
+            return;
+        }
+
+        data.CreateUser = userId;
+        data.CreateCompID = 0;
+        data.CreateCompName = "";
+        data.CreateAddress = "";
+        data.ProdID = "";
+        var url = MDApp.url.api + "/comp/AddComyMessage?id=" + ds.compInfo.ID;
+        var contentJson = "{\"CompName\":\"" + data.CreateCompName + "\",\"Name\":\"" + data.CreateUserName + "\",\"Date\":\"" + new Date().getDate + "\"}";
+        var dataJson = JSON.stringify(data);
+        MDPostData(ds.scope, ds.http, url, data, "", function () {
+
+            var data = "SendID=" + userId + "&MsgType=15&ReceID=" + ds.compInfo.ID + "&Content=" + contentJson;
+            MDLoadDatas(ds.scope, ds.http, "http://im.maidiyun.com/comet_cmd.asyn", data);
+            $("#UserName").val("");
+            $("#Phone").val("");
+            $("#Email").val("");
+            $("#Content").val("");
+            //  alert("留言成功!","提示");
+
+            //message.load(1, 20);
+
+        }, 0);
+    };
+    //使用Get得到数据
+    function MDLoadDatas(scope, http, url, source, callback, type) {
+        //MDloadding.show();
+        if ($.browser.msie && ($.browser.version == "7.0" || $.browser.version == "8.0" || $.browser.version == "9.0") && window.XDomainRequest) {
+            //Use Microsoft XDR
+            var xdr = new XDomainRequest();
+            xdr.open("get", url);
+            xdr.onload = function () {
+                //MDloadding.hide();
+
+                var data = JSON.parse(xdr.responseText);
+
+                if (type != undefined) {
+                    if (type == 1) {
+                        source.source = data;
+
+                        if (callback != undefined && callback != null) {
+                            callback();
+                        }
+                    } else {
+                        source.Rows = data.Data.Rows;
+                        source.Total = data.Data.TotalCount;
+
+                        if (callback != undefined) {
+                            callback();
+                        }
+                    }
+
+                } else {
+                    if (data.State > 0) {
+                        source.source = data.Data;
+
+                        if (callback != undefined && callback != null) {
+                            callback();
+                        }
+
+                    } else {
+                        if (callback != undefined && callback != null) {
+                            callback();
+                        }
+
+                        if (data.Message != null) {
+                            // layer.msg(data.Message, { icon: 0, time: 850 });
+                            alert(data.Message);
+                        }
+                    }
+                }
+                scope.$apply();
+            };
+            xdr.onprogress = function () { };
+            xdr.ontimeout = function () {
+
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                //MDloadding.hide();
+            };
+            xdr.onerror = function () {
+
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                //MDloadding.hide();
+            };
+            setTimeout(function () {
+                xdr.send();
+            }, 0);
+        } else {
+
+
+            ds.http.get(url, header).success(function (data) {
+                //MDloadding.hide();
+                if (type != undefined) {
+                    if (type == 1) {
+                        source.source = data;
+                        if (callback != undefined && callback != null) {
+                            callback();
+                        }
+                    } else {
+                        source.Rows = data.Data.Rows;
+                        source.Total = data.Data.TotalCount;
+                        if (callback != undefined) {
+                            callback();
+                        }
+                    }
+
+                } else {
+                    if (data.State > 0) {
+                        source.source = data.Data;
+                        if (callback != undefined && callback != null) {
+                            callback();
+                        }
+
+                    } else {
+                        if (callback != undefined && callback != null) {
+                            callback();
+                        }
+
+                        if (data.Message != null) {
+                            // layer.msg(data.Message, { icon: 0, time: 850 });
+                            alert(data.Message);
+                        }
+                    }
+                }
+
+            })
+            .error(function (data) {
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                //MDloadding.hide();
+                alert("加载信息失败！");
+            });
+        }
+    };
+    //使用post得到数据
+    function MDPostData(scope, http, url, datasource, source, callback, type) {
+        //   MDloadding.show();
+        if ($.browser.msie && ($.browser.version == "7.0" || $.browser.version == "8.0" || $.browser.version == "9.0") && window.XDomainRequest) {
+            // Use Microsoft XDR
+            var xdr = new XDomainRequest();
+            xdr.open("post", url);
+            xdr.onload = function () {
+                //MDloadding.hide();
+                var data = JSON.parse(xdr.responseText);
+                if (type != undefined) {
+                    if (type == 0) {
+                        if (source) {
+                            source.source = data;
+                        }
+                    } else if (type == 1) {
+                        if (data.State > 0) {
+                            if (source) {
+                                source.source = data.Data;
+                            }
+                        } else {
+                            //layer.msg(data.Message, { icon: 2, time: 800 });
+                            alert(data.Message);
+                        }
+
+                    } else {
+                        if (data.State > 0) {
+                            if (source) {
+                                source.Rows = data.Data.Rows;
+                                source.Total = data.Data.TotalCount;
+                            }
+                        } else {
+                            // layer.msg(data.Message, { icon: 2, time: 800 });
+                            alert(data.Message);
+                        }
+                    }
+                } else {
+                    // layer.msg(data.Message, { icon: 2, time: 800 });
+                    alert(data.Message);
+                }
+
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                scope.$apply();
+            };
+            xdr.onprogress = function () { };
+            xdr.ontimeout = function () {
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                // MDloadding.hide();
+            };
+            xdr.onerror = function () {
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                //MDloadding.hide();
+                alert("加载信息失败！");
+            };
+            setTimeout(function () {
+                xdr.send(JSON.stringify(datasource));
+            }, 0);
+        } else {
+            http.post(url, datasource, header)
+            .success(function (data) {
+                //  MDloadding.hide();
+                if (type != undefined) {
+                    if (type == 0) {
+                        if (source) {
+                            source.source = data;
+                        }
+                    } else if (type == 1) {
+                        if (data.State > 0) {
+                            if (source) {
+                                source.source = data.Data;
+                            }
+                        } else {
+                            // layer.msg(data.Message, { icon: 2, time: 800 });
+                            alert(data.Message);
+                        }
+
+                    } else {
+                        if (data.State > 0) {
+                            if (source) {
+                                source.Rows = data.Data.Rows;
+                                source.Total = data.Data.TotalCount;
+                            }
+                        } else {
+                            // layer.msg(data.Message, { icon: 2, time: 800 });
+                            alert(data.Message);
+                        }
+                    }
+                } else {
+                    //   layer.msg(data.Message, { icon: 2, time: 800 });
+                    alert(data.Message);
+                }
+
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+            })
+            .error(function (data) {
+                if (callback != undefined && callback != null) {
+                    callback();
+                }
+                //MDloadding.hide();
+                alert("加载信息失败！");
+            });
+        }
+    };
+
+    function writeuser(data) {
+        data = JSON.parse(data);
+        user.writeAndChangeTitle(data);
+    };
+</script>

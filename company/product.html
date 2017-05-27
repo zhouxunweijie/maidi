@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="pkg-detail">
+        <div id="yb" class="lines" style="display: none;">
+        </div>
+        <div id="down" class="lines" style="display: none;">
+            <table class="table">
+                <tbody id="downBody">
+                </tbody>
+            </table>
+            <div id="downPage" class="txt-indent0 mt5" memo="下载记录">
+            </div>
+        </div>
+        <div id="comment" class="lines" style="display: none;">
+            <div id="commentContent" class="comment-wrap">
+            </div>
+            <div id="commentPage" class="txt-indent0 mt5">
+            </div>
+        </div>
+    </div>
+    <script src="../js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="../js/global.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var args = getUrlParams();
+        var prodID = args["id"];
+        var key = args["key"];
+        $(function () {
+
+            if (key == "yb") {
+                $("#yb").show();
+                gGet("http://api.maidiyun.com/pkg/yb/?prodid=" + prodID, function (data) {
+                    if (data.Rows.length == 0) {
+                        $("#yb").html("<div class='text-center'>暂无二维样本....</div>");
+                        return;
+                    }
+                    gGet("http://pic.maidiyun.com/yb/?key=" + key64.yb + "&prodid=" + prodID + "&ybids=" + data.Rows.join(), function (d) {
+                        var images = [];
+                        for (var i = 0; i < d.Rows.length; i++) {
+                            images.push('<img src="http://pic.maidiyun.com/' + key64.yb +'_'+prodID+'_'+ d.Rows[i] + '_950x0.jpg" />');
+                        }
+                        $("#yb").html(images.join(""));
+                    });
+                });
+            }
+            else if (key == "down") {
+                $("#down").show();
+
+                downLoads.load(1, 20);
+            }
+            else if (key == "comment") {
+                $("#comment").show();
+
+                comments.load(1, 20);
+            }
+
+        });
+        var commentReplys = [];
+        //产品评论
+        var comments = {
+            load: function (page, count) {
+                var url = "http://api.maidiyun.com/comp/message?page=" + page + "&count=" + count + "&prodid="+prodID+"&replyPage=1&replyCount=" + commentReply.count;
+                gGet(url, function (data) {
+                    if (data.State == 1) {
+                        $("#commentContent").html("");
+                        if (data.Count == 0) {
+                            $("#commentContent").append("<div class='text-center'>暂无评论....</div>");
+                            return;
+                        }
+                        $.each(data.Rows, function (idx, obj) {
+                            var tempHtmls = [];
+
+                            tempHtmls.push('<ul class="comment-list">');
+
+                            tempHtmls.push('<li class="wrap-list">');
+                            tempHtmls.push('<div class="list-left"><img src="http://pic.maidiyun.com/dXNlci9sb2dv_' + obj.CreateUser + '_58x58.jpg" /><img src="http://g.maidiyun.com/images/round58x58px.png" /></div>');
+                            tempHtmls.push('<div class="list-right">');
+                            tempHtmls.push('<div class="list-title"><h6>' + obj.CreateUserName + '</h6><span>' + GetDate(obj.CreateDate, true) + '</span></div>');
+                            tempHtmls.push('<p>' + obj.Content + '</p>');
+
+                            commentReplys.push(2); //将回复页码以及id放到数组中
+                            if (obj.Reply.length > 0) {
+                                tempHtmls.push('<ul class="reply-list">');
+                                $.each(obj.Reply, function () {
+                                    tempHtmls.push('<li>');
+                                    var nameClass = "";
+                                    if (this.ReplyCompID == obj.CompID) {
+                                        nameClass = "comptext";
+                                        tempHtmls.push('<div class="reply-left"> <img src="http://pic.maidiyun.com/Y29tcC9sb2dv_' + this.ReplyCompID + '_58x58.jpg" /><img src="http://g.maidiyun.com/images/round58x58px1.png" width="58" height="58" /></div>');
+                                    }
+                                    else {
+                                        tempHtmls.push('<div class="reply-left"> <img src="http://pic.maidiyun.com/dXNlci9sb2dv_' + this.ReplyUser + '_58x58.jpg" /><img src="http://g.maidiyun.com/images/round58x58px1.png" width="58" height="58" /></div>');
+                                    }
+                                    tempHtmls.push('<div class="reply-right">');
+
+                                    tempHtmls.push('<div class="reply-title"><h6 class="' + nameClass + '">' + this.ReplyUserName + '</h6><span>' + GetDate(obj.CreateDate, true) + '</span></div>');
+                                    tempHtmls.push('<p>' + this.ReplyText + '</p>');
+                                    tempHtmls.push('</div>');
+                                    tempHtmls.push('<div class="clear"></div>');
+                                    tempHtmls.push('</li>');
+                                });
+                                tempHtmls.push('</ul>');
+
+                                if (obj.Reply.length == commentReply.count) {
+                                    tempHtmls.push('<div class="reply-login"><a isLoad="true" class="showReply" id="showReply' + idx + '" dataid="' + obj.ID + '" compID="' + obj.CompID + '">加载更多....</a></div>');
+                                }
+                            }
+                            else {
+                                tempHtmls.push('<div></div>');
+                            }
+
+                            tempHtmls.push('<div class="clear"></div></li>');
+
+                            $("#commentContent").append(tempHtmls.join(""));
+                        });
+                        $(".showReply").click(function () {
+                            var isLoad = $(this).attr("isLoad");
+                            if (isLoad == "true") {
+                                commentReply.load($(this).attr("id").replace("showReply", ""), $(this).attr("dataid"));
+                            }
+                        });
+                        pageWrap("commentPage", page, count, data.Count, comments.load);
+                    }
+                });
+            }
+        };
+        //产品评论回复
+        var commentReply = {
+            count: 5,
+            load: function (idx, msgid) {
+                var url = "http://api.maidiyun.com/comp/messagereply?page=" + commentReplys[idx] + "&count=" + commentReply.count + "&msgid=" + msgid;
+                gGet(url, function (data) {
+                    if (data.State == 1) {
+                        $.each(data.Rows, function () {
+                            var tempHtmls = [];
+
+                            tempHtmls.push('<li>');
+                            var nameClas = "";
+                            if (this.ReplyCompID == $("#showReply" + idx).attr("CompID")) {
+                                nameClas = "comptext";
+                                tempHtmls.push('<div class="reply-left"> <img src="http://pic.maidiyun.com/Y29tcC9sb2dv_' + this.ReplyCompID + '_58x58.jpg" /><img src="http://g.maidiyun.com/images/round58x58px1.png" width="58" height="58" /></div>');
+                            }
+                            else {
+                                tempHtmls.push('<div class="reply-left"><img src="http://pic.maidiyun.com/dXNlci9sb2dv_' + this.ReplyUser + '_58x58.jpg" /><img src="http://g.maidiyun.com/images/round58x58px1.png" width="58" height="58" /></div>');
+                            }
+
+                            tempHtmls.push('<div class="reply-right">');
+
+                            tempHtmls.push('<div class="reply-title"> <h6 class="' + nameClas + '"> ' + this.ReplyUserName + '</h6><span>' + GetDate(this.ReplyDate, true) + '</span></div>');
+                            tempHtmls.push('<p>' + this.ReplyText + '</p>');
+                            tempHtmls.push('</div>');
+                            tempHtmls.push('<div class="clear"></div>');
+                            tempHtmls.push('</li>');
+
+                            $("#showReply" + idx).parent().parent().find(".reply-list").append(tempHtmls.join(""));
+                        });
+                        if (data.Rows.length < commentReply.count) {
+                            $("#showReply" + idx).parent().hide();
+                        } else {
+                            commentReplys[idx] += 1;
+                        }
+                    }
+                });
+            }
+        };
+        var downLoads = {
+            load: function (page, count) {
+                var url = "http://api.maidiyun.com/pkg/down/?page=" + page + "&count=" + count + "&prodid="+prodID;
+
+                gGet(url, function (data) {
+                    if (data.State == 1) {
+                        if (data.Count == 0) {
+                            $("#commentContent").append("<div class='text-center'>暂无评论....</div>");
+                            return;
+                        }
+                        var tempHtmls = [];
+                        //table header
+                        tempHtmls.push('<tr class="header">');
+                        tempHtmls.push('<td style="width: 220px;">下载人</td>');
+                        tempHtmls.push('<td>地址</td>');
+                        tempHtmls.push('<td style="width: 200px;">产品参数</td>');
+                        tempHtmls.push('<td style="width: 150px;">下载日期</td>');
+                        tempHtmls.push('</tr>');
+                        $.each(data.Rows, function () {
+                            //table datalist
+                            tempHtmls.push('<tr class="data_list">');
+                            tempHtmls.push('<td>' + this.UserName + '</td>');
+                            tempHtmls.push('<td>' + this.Address + '</td>');
+                            if (this.SkuName == "") {
+                                this.SkuName = "-";
+                            }
+                            tempHtmls.push('<td>' + this.SkuName + '</td>');
+                            tempHtmls.push('<td>' + GetDate(this.DownDate, true) + '</td>');
+                            tempHtmls.push('</tr>');
+                        });
+                        //生成分页
+                        pageWrap("downPage", page, count, data.Count, downLoads.load);
+                        $("#downBody").html(tempHtmls.join(""));
+                    } else {
+                        $("#down").html("<div class='ReplyShowMore'>暂无下载记录...</div>");
+                    }
+
+                });
+            }
+        };    
+    
+    </script>
+</body>
+</html>

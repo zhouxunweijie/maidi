@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/info.css"/>
+    <style type="text/css">
+        .subbtn-wrap {
+            border: 0 solid #fff;
+            border-radius: 6px;
+            background-color: #169BD5;
+            padding: 10px 0;
+            display: block;
+            margin: 20px 5px;
+            text-decoration: none;
+            font-size: 13px;
+            color: #fff;
+            text-align: center;
+        }
+
+      
+    </style>
+</head>
+<body ms-controller="myCtl">
+
+
+    <div class="mui-scroll-wrapper" ms-visible="userInfo['UserID']" style="display:none;">
+
+
+        <ul class="data-group">
+            <li class="data-row click-gray">
+                <p class="opt md-icon">
+                    <span class="icon-right"></span>
+                </p>
+                <div class="body">
+                    <img class="float-left size90 bg-f2 border-f2 mr10" ms-attr="{src:getLogo()}" />
+                    <span class="title" style="font-size:18px;">{{userInfo.NickName || userInfo.RealName}}</span>
+                    <p class="">{{'通号：'+userInfo.Mdt}}</p>
+                    <p class="" ms-if="userInfo.CompName">{{'单位：'+userInfo.CompName}}</p>
+                </div>
+            </li>
+            <li class="data-row click-gray" ms-if="userInfo.CompName">
+                <label>单位名称</label>
+                <div class="body">
+                    {{userInfo.CompName}}
+                </div>
+            </li>
+            <li class="data-row click-gray" ms-if="userInfo.Phone" open-type="common">
+                <label>电话</label>
+                <div class="body">
+                    {{userInfo.Phone}}
+                </div>
+                <p class="opt md-icon">
+                    <span class="icon-phone"></span>
+                </p>
+            </li>
+            <li class="data-row click-gray" ms-if="userInfo.Email" open-type="common">
+                <label>电子邮箱</label>
+                <div class="body">
+                    {{userInfo.Email}}
+                </div>
+                <p class="opt md-icon">
+                    <span class="icon-email"></span>
+                </p>
+            </li>
+            <li class="data-row click-gray" ms-if="userInfo.OrgName">
+                <label>部门</label>
+                <div class="body">
+                    {{userInfo.OrgName}}
+                </div>
+                <p class="opt md-icon">
+                    <span class="icon-email"></span>
+                </p>
+            </li>
+            <li class="data-row click-gray" ms-if="userInfo.Duty">
+                <label>职务</label>
+                <div class="body">
+                    {{userInfo.Duty}}
+                </div>
+                <p class="opt md-icon">
+                    <span class="icon-email"></span>
+                </p>
+            </li>
+        </ul>
+        <a href="down.html" class="subbtn-wrap">加为好友</a>
+    </div>
+    <div class="footer animated   bannerTips">
+        <img src="images/mdicon.png" class="md-icon-logo" />
+        <div class="content">
+            <span class="split">
+            </span>
+            <div class="body">
+                <div class="title">迈迪通</div>
+                <div class="description">制造业通用应用、工作、服务平台。 </div>
+            </div>
+            <a class="down" href="down.html">
+                下载
+            </a>
+            <div class="div_close md-icon">
+                <span class="icon-close-3 color-white font-22"></span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="empty" ms-visible="userInfo['UserID']===0" style="display: none">获取用户信息失败！</div>
+    <div class="empty" ms-visible="userInfo['UserID']===''">加载中...</div>
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery.base64.js"></script>
+    <script src="js/jquery.cookies.js"></script>
+    <script src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=W6WIQmkWMM7fHZ1bQzONDGwimUikfaPU"></script>
+    <script type="text/javascript" src="js/avalon.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "myCtl",
+            code: "",
+            userId: "",
+            userInfo: {},
+            getLogo: function () {
+                return MdAppUrl.pic + "/dXNlci9sb2dv_" + vm.userInfo.UserID + "_100x100.jpg"
+            }
+
+
+        });
+
+        $(function () {
+            $(".bannerTips .div_close").click(function () {
+                $(this).parents(".bannerTips").addClass("fadeOutRight");
+            });
+            //获取码
+            getCode();
+
+            //获取基本信息
+            getUserInfo();
+
+            $("body").on("click", "[open-type='common']", function () {
+                window.location.href = "down.html";
+            });
+
+        });
+
+        //获取扫码信息
+        function getCode() {
+            var params = window.location.href.split("?");
+            var code = "";
+            if (params.length > 1) {
+                code = params[1];
+            }
+
+            code = code.replace("=", "")
+
+            if (code.startsWith("MDU")) {
+                vm.code = code;
+                vm.userId = vm.code.replace("MDU", "");
+            }
+            else {
+                window.location.href = "down.html";
+            }
+
+        };
+
+        //获取企业基本信息
+        function getUserInfo() {
+            setTimeout(function () {
+                var url = "/31/u/info?id=" + vm.userId
+
+                getAjaxData(url, function (reData) {
+
+                    if (reData && reData.State > 0) {
+                        vm.userInfo = reData.Data;
+                    }
+                    else {
+                        vm.userInfo = { UserID: 0 };
+                    }
+
+                }, 500);
+            });
+
+        };
+    </script>
+</body>
+</html>

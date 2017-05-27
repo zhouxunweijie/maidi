@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <table id="ItemTable" cellspacing="0" style="font-family: ''; letter-spacing: normal;
+        orphans: auto; text-indent: 0px; text-transform: none; widows: auto; word-spacing: 0px;
+        -webkit-text-stroke-width: 0px; word-wrap: break-word; word-break: break-all;" width="100%">
+       
+    </table>
+    <div id="htmlContent">
+    </div>
+    <script src="../js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="../js/global.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var idx = 0;
+        function reLoad(data, isArray) {
+            var tempHtmls = [];
+            if (isArray) {
+                $.each(data, function () {
+                    tempHtmls.push('<tr id="itemId_' + idx + '" bkindex="1" dcount="1">');
+                    tempHtmls.push(' <td id="tn0" style="font-size: 9pt; border: 1px solid transparent;">');
+                    tempHtmls.push('<div style="color: rgb(66, 180, 117); padding-left: 10px;">');
+                    var fontStyle = "";
+                    if (this.MsgDirect == 1) {
+                        fontStyle = "color:blue;";
+                    }
+                    tempHtmls.push('<font style="font-size: 9pt; font-family: Tahoma;' + fontStyle + '"');
+
+                    tempHtmls.push('<div style="margin-right: 3px;">' + this.Name + '&nbsp;' + GetDate(this.Date, false) + '</div>');
+                    tempHtmls.push('</font>');
+
+                    tempHtmls.push('<div class="msgContentDiv1" style="margin-top: 5px; padding-left: 20px;">' + this.Content + '</div>');
+                    tempHtmls.push('</td>');
+                    tempHtmls.push('</tr>');
+                    idx++;
+                });
+            }
+            else {
+                tempHtmls.push('<tr id="itemId_' + idx + '" bkindex="1" dcount="1"> ');
+                tempHtmls.push(' <td id="tn0" style="font-size: 9pt; border: 1px solid transparent;">');
+                tempHtmls.push('<div style="color: rgb(66, 180, 117); padding-left: 10px;">');
+                var fontStyle = "";
+                if (this.MsgDirect == 1) {
+                    fontStyle = "color:blue;";
+                }
+                tempHtmls.push('<font style="font-size: 9pt; font-family: Tahoma;' + fontStyle + '"');
+                tempHtmls.push('<div style="margin-right: 3px;">' + data.Name + '&nbsp;' + GetDate(data.Date, false) + '</div>');
+                tempHtmls.push('</font>');
+
+                tempHtmls.push(' <div class="msgContentDiv1" style="margin-top: 5px; padding-left: 20px;">' + data.Content + '</div>');
+                tempHtmls.push('</td>');
+                tempHtmls.push('</tr>');
+                idx++;
+            }
+
+            $("#ItemTable").append(tempHtmls.join(""));
+        };
+
+        function ReLoadImg(id, file) {
+            $("#" + id).attr("src", file);
+        };
+
+        function Clear() {
+            $("#ItemTable").html("");
+        }
+
+        $(function () {
+            $("table").on("dblclick", "img", function () {
+                var path = $(this).attr("zimg");
+                //双击显示图片
+                window.CallCSharpMethod("ShowPic", "" + path);
+            });
+
+            $("table").on("click", ".openFile", function () {
+                var path = $(this).attr("realFile");
+
+                window.CallCSharpMethod("OpenFile", "" + path);
+            });
+            $("table").on("click", ".openDir", function () {
+                var path = $(this).attr("realDir");
+
+                window.CallCSharpMethod("OpenDir", "" + path);
+            });
+        });
+
+    </script>
+</body>
+</html>

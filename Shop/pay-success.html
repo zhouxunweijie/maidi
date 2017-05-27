@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>支付成功</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../css/pages/pay-success.css" />
+	</head>
+
+	<body ms-controller="myCtl">
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">
+				  支付结果
+			</h1>
+		</header>
+
+		<div class="mui-content" style="padding-bottom: 104px;">
+			<div class="data-group mui-text-center" style="padding-bottom: 15px;padding-top:15px;">
+				<img src="../images/pay/succ.png" style="width: 40px;height: 40px;" />
+				<div style="text-align: center;">恭喜，支付成功！</div>
+			</div>
+			<ul class="data-group" ms-for="index,obj in Datas">
+				<li class="data-row">
+					<label>订单号</label>
+					<div class="body" ms-text="obj.OrderID">
+					</div>
+				</li>
+				<li class="data-row">
+					<label>企业名称</label>
+					<div class="body" ms-text="obj.SupplierName">
+					</div>
+				</li>
+				<li class="data-row">
+					<label>订单金额</label>
+					<div class="body" ms-text="'￥'+obj.PayPrice">
+					</div>
+				</li>
+			</ul>
+
+			<ul class="data-group" ms-if="Datas.length>1">
+				<li class="data-row">
+					<label>付款合计</label>
+					<div class="body" ms-text="'￥'+TotalPrice">
+					</div>
+				</li>
+			</ul>
+		</div>
+		<footer>
+			<div class="instruction"><img src="../images/1.png" />请下载迈迪通查看订单详情<img src="../images/1.png" /></div>
+			<div>
+				<a href="http://www.maidiyun.com/update/phone/MDT.apk"><img src="../images/Android-icon.png" />Android版下载</a>
+				<a href="https://itunes.apple.com/cn/app/mai-di-tong-gong-ye-qi-ye/id1133075946?mt=8"><img src="../images/IOS-icon.png" />IOS版下载</a>
+			</div>
+		</footer>
+		<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.cookies.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/avalon.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/pages/pay-success.js"></script>
+	</body>
+
+</html>
