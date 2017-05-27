@@ -472,7 +472,7 @@ function initBodyEvent() {
 					});
                 }
                 else {
-                    simpleNoty("无法自动定位,请输入您的用餐地址");
+                    layer.open({content:"无法自动定位,请输入您的用餐地址",skin:"msg",time:5});
                 }
 			getLocation();
 			return;
